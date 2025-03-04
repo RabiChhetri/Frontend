@@ -16,13 +16,14 @@ export default function Booking() {
   <input type="date" name="date" id="date" placeholder="Enter the date" />
   <br />
 
-  <label htmlFor="country">Country:</label>
+  <label htmlFor="country">Service:</label>
  <select name="" id="">
-  <option value="">Nepal</option>
-  <option value="">India</option>
-  <option value="">Germany</option>
-  <option value="">China</option>
-  <option value="">Others</option>
+  <option value="default">Choose Our Services</option>
+  <option value="">HairCut (Rs.200)</option>
+  <option value="">Shaving (Rs.150)</option>
+  <option value="">HairCut and Shaving (Rs.250)</option>
+  <option value="">Hair Color (Rs.500)</option>
+  <option value="">HairCut and Wash (Rs.350)</option>
  </select>
   <br />
 
