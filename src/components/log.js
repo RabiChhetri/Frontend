@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function Log() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState(""); // State for displaying messages
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth', { // Adjusted the endpoint to match your backend
+      const response = await fetch('http://localhost:5000/api/auth', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,16 +20,21 @@ export default function Log() {
       const json = await response.json();
 
       if (response.ok) {
-        // Save the auth token and alert success
         localStorage.setItem('token', json.authToken);
-        alert("Login Successful!");
-        navigate('/'); // Redirect to homepage or dashboard
+        alert("Login Successful!"); // Show alert on successful login
+        setMessage("Login Successful! Redirecting...");
+
+        setTimeout(() => {
+          navigate('/Booking'); // Redirect to Booking.js
+        }, 1500);
       } else {
-        alert(json.error || 'Invalid credentials');
+        alert(json.error || 'Invalid credentials'); // Show alert for errors
+        setMessage(json.error || 'Invalid credentials');
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while logging in");
+      alert("An error occurred while logging in"); // Show alert if there's an error
+      setMessage("An error occurred while logging in");
     }
   };
 
@@ -40,6 +46,7 @@ export default function Log() {
     <div className="login-container">
       <div className="login-form">
         <h2>Log In</h2>
+        {message && <p className="message">{message}</p>} {/* Display success/error message */}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Email</label>
@@ -63,7 +70,7 @@ export default function Log() {
               required
             />
           </div>
-          <Link to="/Booking" type="submit" className="login-btn">Log In</Link>
+          <button type="submit" className="login-btn">Log In</button>
         </form>
         <p className="register-link">
           Don't have an account? <Link to="/register">Register</Link>
