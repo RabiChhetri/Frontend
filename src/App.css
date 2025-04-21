@@ -392,64 +392,7 @@ textarea {
   }
 }
 
-.about-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  /* background: linear-gradient(135deg, #f5f7fa, #c3cfe2); */
-  flex-wrap: wrap;
-}
 
-.about-content {
-  max-width: 600px;
-  margin: 1rem;
-}
-
-.about-content h1 {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.about-content p {
-  font-size: 1.1rem;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.about-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: #6b73ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.about-btn:hover {
-  background-color: #5a63e0;
-}
-
-.about-image img {
-  width: 100%;
-  max-width: 500px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-@media (max-width: 768px) {
-  .about-container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .about-image img {
-    margin-top: 1.5rem;
-  }
-}
 
 
 /* Register.css 
@@ -666,4 +609,114 @@ h2 {
       align-items: center;
     }
   }
+  
+/* Home Component Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation Classes */
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.8s ease-out forwards;
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight 0.8s ease-out forwards;
+}
+
+.animate-zoomIn {
+  animation: zoomIn 0.8s ease-out forwards;
+}
+
+/* Service Box Hover Animation */
+.service_box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service_box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Carousel Content Animation */
+.slider_content {
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+/* About Section Animation */
+.about_content {
+  animation: fadeInLeft 1s ease-out forwards;
+}
+
+.about_img {
+  animation: fadeInRight 1s ease-out forwards;
+}
+
+/* Service Section Animation */
+.service_section .section_heading {
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.service_box {
+  animation: zoomIn 0.8s ease-out forwards;
+}
   

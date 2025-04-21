@@ -23,7 +23,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5" stlye={{}}> */}
             <div
-              className="carousel-caption d-none d-md-block text-start"
+              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -39,7 +39,7 @@ export default function Home() {
                 </p>
                 <Link
                   to="/log"
-                  className="btn btn-md btn-map"
+                  className="btn btn-md btn-map animate-zoomIn"
                   role="button"
                   aria-pressed="true"
                 >
@@ -57,7 +57,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5 "> */}
             <div
-              className="carousel-caption d-none d-md-block text-start"
+              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -75,7 +75,7 @@ export default function Home() {
                 {/* <button type="button" className="btn btn-map" href="logo.com"></button> */}
                 <Link
                   to="/log"
-                  className="btn btn-md btn-map"
+                  className="btn btn-md btn-map animate-zoomIn"
                   role="button"
                   aria-pressed="true"
                 >
@@ -93,7 +93,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5"> */}
             <div
-              className="carousel-caption d-none d-md-block text-start"
+              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -109,7 +109,7 @@ export default function Home() {
                 </p>
                 <Link
                   to="/log"
-                  className="btn btn-md btn-map"
+                  className="btn btn-md btn-map animate-zoomIn"
                   role="button"
                   aria-pressed="true"
                 >
@@ -153,16 +153,14 @@ export default function Home() {
           <div className="row">
             <div className="col-md-6">
               <div className="about_content">
-                <h3 className="Introducing">
-                  Introducing
-                </h3>
-                <h2 className="Astar">
+                <h3 className="Introducing animate-fadeInLeft">Introducing</h3>
+                <h2 className="Astar animate-fadeInLeft">
                   Astar Unisex Salon
                   <br />
                   Since 2022
                 </h2>
                 <img
-                  className="bl"
+                  className="bl animate-zoomIn"
                   src="/background/about-logo.png"
                   alt="logo"
                   style={{
@@ -172,7 +170,7 @@ export default function Home() {
                     margin: "0 auto 20px ",
                   }}
                 />
-                <p className="wow fadeInUp" >
+                <p className="animate-fadeInLeft">
                   Barber is a person whose occupation is mainly to cut dress
                   groom style and shave men's and boys' hair. A barber's place
                   of work is known as a "barbershop" or a "barber's".
@@ -182,7 +180,7 @@ export default function Home() {
                 </p>
                 <a
                   href="/"
-                  className="btn btn-md btn-map betn-about"
+                  className="btn btn-md btn-map betn-about animate-zoomIn"
                   role="button"
                   aria-pressed="true"
                   style={{
@@ -198,9 +196,9 @@ export default function Home() {
             </div>
             <div className="col-md-6 d-none d-md-block">
               <div className="about_img">
-                <img src="background/barberimg.jpg" alt="idea-images" className="about_img_1 " />
-                <img src="background/about-2.jpg" alt="idea-images" className="about_img_2 " />
-                <img src="background/about-3.jpg" alt="idea-images" className="about_img_3 " />
+                <img src="background/barberimg.jpg" alt="idea-images" className="about_img_1 animate-fadeInRight" />
+                <img src="background/about-2.jpg" alt="idea-images" className="about_img_2 animate-fadeInRight" />
+                <img src="background/about-3.jpg" alt="idea-images" className="about_img_3 animate-fadeInRight" />
               </div>
             </div>
           </div>
@@ -249,34 +247,34 @@ export default function Home() {
 
     <section className="service_section padding">
         <div className="container">
-            <div className="section_heading text-center mb-40 ">
+            <div className="section_heading text-center mb-40 animate-fadeInDown">
                 <h2>Our Services</h2>
                 <div className="heading-line"></div>
             </div>
             <div className="row">
-                <div className="col-lg-3 col-md-6 sm-padding ">
-                    <div className="service_box">
+                <div className="col-lg-3 col-md-6 sm-padding">
+                    <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faScissors} />
                         <h3>Haircut Styles</h3>
                         <p>Barber is a person whose occupation is mainly to cut dress style.</p>
                     </div>
                 </div>
-                <div className="col-lg-3 col-md-6 sm-padding ">
-                    <div className="service_box">
+                <div className="col-lg-3 col-md-6 sm-padding">
+                    <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faRulerHorizontal} />
                         <h3>Beard Triming</h3>
                         <p>Barber is a person whose occupation is mainly to cut dress style.</p>
                     </div>
                 </div>
-                <div className="col-lg-3 col-md-6 sm-padding wow ">
-                    <div className="service_box">
+                <div className="col-lg-3 col-md-6 sm-padding">
+                    <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faShower} />
                         <h3>Hair Wash</h3>
                         <p>Barber is a person whose occupation is mainly to cut dress style.</p>
                     </div>
                 </div>
-                <div className="col-lg-3 col-md-6 sm-padding ">
-                    <div className="service_box">
+                <div className="col-lg-3 col-md-6 sm-padding">
+                    <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faBrush} />
                         <h3>Hair Coloring</h3>
                         <p>Barber is a person whose occupation is mainly to cut dress style.</p>

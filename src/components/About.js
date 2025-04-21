@@ -1,4 +1,5 @@
 import React from "react";
+import "../CSS/about.css";
 const services = [
   {
     category: 'Hair Styling',
