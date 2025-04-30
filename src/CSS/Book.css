@@ -321,4 +321,13 @@ select:hover {
 .error button:hover {
   background-color: #c82333;
 }
+
+.date-helper-text {
+  display: block;
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-style: italic;
+}
   

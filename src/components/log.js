@@ -25,7 +25,7 @@ export default function Log() {
         setMessage("Login Successful! Redirecting...");
 
         setTimeout(() => {
-          navigate('/Booking'); // Redirect to Booking.js
+          navigate('/Profile'); // Redirect to Booking.js
         }, 1500);
       } else {
         alert(json.error || 'Invalid credentials'); // Show alert for errors
@@ -74,6 +74,10 @@ export default function Log() {
         </form>
         <p className="register-link">
           Don't have an account? <Link to="/register">Register</Link>
+        </p>
+
+        <p className="register-link">
+          <Link to="/adminlog"> Login as Adim</Link>
         </p>
       </div>
     </div>

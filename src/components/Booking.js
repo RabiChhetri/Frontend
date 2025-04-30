@@ -1,399 +1,81 @@
-// // import React, { useState } from 'react';
-// // import '../CSS/Book.css';
-
-// // export default function Booking() {
-// //   const [formData, setFormData] = useState({
-// //     fullName: '',
-// //     phoneNumber: '',
-// //     date: '',
-// //     time: '',
-// //     service: 'default',
-// //   });
-
-// //   const [message, setMessage] = useState('');
-
-// //   const handleChange = (e) => {
-// //     setFormData((prev) => ({
-// //       ...prev,
-// //       [e.target.name]: e.target.value,
-// //     }));
-// //   };
-
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     setMessage('');
-
-// //     if (formData.service === 'default') {
-// //       const errorMsg = 'Please select a service.';
-// //       setMessage(errorMsg);
-// //       return;
-// //     }
-
-// //     // Format time to HH:MM AM/PM
-// //     const time24 = formData.time;
-// //     const [hours, minutes] = time24.split(':');
-// //     const ampm = hours >= 12 ? 'PM' : 'AM';
-// //     const hour12 = (hours % 12 || 12).toString().padStart(2, '0');
-// //     const formattedTime = `${hour12}:${minutes} ${ampm}`;
-
-// //     try {
-// //       const response = await fetch('http://localhost:5000/api/book', {
-// //         method: 'POST',
-// //         headers: {
-// //           'Content-Type': 'application/json',
-// //         },
-// //         body: JSON.stringify({
-// //           fullName: formData.fullName,
-// //           phoneNumber: formData.phoneNumber,
-// //           date: formData.date,
-// //           time: formattedTime,
-// //           service: formData.service,
-// //         }),
-// //       });
-
-// //       const data = await response.json();
-
-// //       if (response.ok) {
-// //         setMessage('Booking successful!');
-// //         // Reset form
-// //         setFormData({
-// //           fullName: '',
-// //           phoneNumber: '',
-// //           date: '',
-// //           time: '',
-// //           service: 'default',
-// //         });
-// //       } else {
-// //         // Display the server error message
-// //         setMessage(data.message);
-// //       }
-// //     } catch (err) {
-// //       console.error('Booking error:', err);
-// //       setMessage('Network error: Please check your connection');
-// //     }
-// //   };
-
-// //   return (
-// //     <div className='booking-container'>
-// //       <div className="service-time-section animate-fadeInLeft">
-// //         <h3>Service Time</h3>
-// //         <ul className="service-time-list">
-// //           <li>
-// //             <span className="service-name">Hair Cut</span>
-// //             <span className="service-duration">30 min</span>
-// //           </li>
-// //           <li>
-// //             <span className="service-name">Hair Cut and Shaving</span>
-// //             <span className="service-duration">45 min</span>
-// //           </li>
-// //           <li>
-// //             <span className="service-name">Shaving</span>
-// //             <span className="service-duration">15 min</span>
-// //           </li>
-// //           <li>
-// //             <span className="service-name">HairCut and Wash</span>
-// //             <span className="service-duration">1 hrs</span>
-// //           </li>
-// //           <li>
-// //             <span className="service-name">Hair Color</span>
-// //             <span className="service-duration">1 hrs</span>
-// //           </li>
-// //         </ul>
-// //       </div>
-
-// //       <form onSubmit={handleSubmit} className="booking-form animate-fadeInRight">
-// //         <label htmlFor="fullName">Full Name:</label>
-// //         <input
-// //           type="text"
-// //           name="fullName"
-// //           id="fullName"
-// //           value={formData.fullName}
-// //           onChange={handleChange}
-// //           placeholder="Enter your Full Name"
-// //           required
-// //         />
-// //         <br />
-
-// //         <label htmlFor="phoneNumber">Phone Number:</label>
-// //         <input
-// //           type="text"
-// //           name="phoneNumber"
-// //           id="phoneNumber"
-// //           value={formData.phoneNumber}
-// //           onChange={handleChange}
-// //           placeholder="Enter your Phone Number"
-// //           required
-// //           maxLength="10"
-// //           pattern="[0-9]{10}"
-// //           title="Please enter a valid 10-digit phone number"
-// //         />
-// //         <br />
-
-// //         <label htmlFor="date">Date:</label>
-// //         <input
-// //           type="date"
-// //           name="date"
-// //           id="date"
-// //           value={formData.date}
-// //           onChange={handleChange}
-// //           required
-// //           min={new Date().toISOString().split('T')[0]}
-// //         />
-// //         <br />
-
-// //         <label htmlFor="service">Service:</label>
-// //         <select
-// //           name="service"
-// //           id="service"
-// //           value={formData.service}
-// //           onChange={handleChange}
-// //           required
-// //         >
-// //           <option value="default">Choose Our Services</option>
-// //           <option value="haircut">HairCut (Rs.200)</option>
-// //           <option value="shaving">Shaving (Rs.150)</option>
-// //           <option value="haircut_shaving">HairCut and Shaving (Rs.250)</option>
-// //           <option value="hair_color">Hair Color (Rs.500)</option>
-// //           <option value="haircut_wash">HairCut and Wash (Rs.350)</option>
-// //         </select>
-// //         <br />
-
-// //         <label htmlFor="time">Time:</label>
-// //         <input
-// //           type="time"
-// //           name="time"
-// //           id="time"
-// //           value={formData.time}
-// //           onChange={handleChange}
-// //           required
-// //           min="08:00"
-// //           max="20:00"
-// //         />
-// //         <br />
-
-// //         <button type="submit">Send</button>
-// //       </form>
-
-// //       {message && (
-// //         <div className="alert-overlay">
-// //           <div className={`alert-popup ${message.includes('successful') ? 'success' : 'error'}`}>
-// //             <div className="alert-icon">
-// //               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-// //                 {message.includes('successful') ? (
-// //                   <path d="M20 6L9 17l-5-5" />
-// //                 ) : (
-// //                   <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-// //                 )}
-// //               </svg>
-// //             </div>
-// //             <h3>{message.includes('successful') ? 'Success!' : 'Error!'}</h3>
-// //             <p>{message}</p>
-// //             <button onClick={() => setMessage('')}>OK</button>
-// //           </div>
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // }
-
-// import React, { useState } from 'react';
-// import '../CSS/Book.css';
-
-// export default function Booking() {
-//   const [formData, setFormData] = useState({
-//     fullName: '',
-//     phoneNumber: '',
-//     date: '',
-//     time: '',
-//     service: 'default',
-//   });
-
-//   const [message, setMessage] = useState('');
-
-//   const handleChange = (e) => {
-//     setFormData((prev) => ({
-//       ...prev,
-//       [e.target.name]: e.target.value,
-//     }));
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setMessage('');
-
-//     if (formData.service === 'default') {
-//       setMessage('Please select a service.');
-//       return;
-//     }
-
-//     // Format time to HH:MM AM/PM
-//     const [hours, minutes] = formData.time.split(':');
-//     const ampm = hours >= 12 ? 'PM' : 'AM';
-//     const hour12 = (hours % 12 || 12).toString().padStart(2, '0');
-//     const formattedTime = `${hour12}:${minutes} ${ampm}`;
-
-//     try {
-//       const response = await fetch('http://localhost:5000/api/book', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           fullName: formData.fullName,
-//           phoneNumber: formData.phoneNumber,
-//           date: formData.date,
-//           time: formattedTime,
-//           service: formData.service,
-//         }),
-//       });
-
-//       const data = await response.json();
-
-//       if (response.ok) {
-//         setMessage('Booking successful!');
-//         setFormData({
-//           fullName: '',
-//           phoneNumber: '',
-//           date: '',
-//           time: '',
-//           service: 'default',
-//         });
-//       } else {
-//         // Handle specific duplicate phone number error
-//         if (data.message && data.message.toLowerCase().includes('phone number already exists')) {
-//           setMessage('Number already exists, use another number to book the appointment.');
-//         } else {
-//           setMessage(data.message || 'Something went wrong.');
-//         }
-//       }
-//     } catch (err) {
-//       console.error('Booking error:', err);
-//       setMessage('Network error: Please check your connection');
-//     }
-//   };
-
-//   return (
-//     <div className='booking-container'>
-//       <div className="service-time-section animate-fadeInLeft">
-//         <h3>Service Time</h3>
-//         <ul className="service-time-list">
-//           <li><span className="service-name">Hair Cut</span><span className="service-duration">30 min</span></li>
-//           <li><span className="service-name">Hair Cut and Shaving</span><span className="service-duration">45 min</span></li>
-//           <li><span className="service-name">Shaving</span><span className="service-duration">15 min</span></li>
-//           <li><span className="service-name">HairCut and Wash</span><span className="service-duration">1 hrs</span></li>
-//           <li><span className="service-name">Hair Color</span><span className="service-duration">1 hrs</span></li>
-//         </ul>
-//       </div>
-
-//       <form onSubmit={handleSubmit} className="booking-form animate-fadeInRight">
-//         <label htmlFor="fullName">Full Name:</label>
-//         <input
-//           type="text"
-//           name="fullName"
-//           id="fullName"
-//           value={formData.fullName}
-//           onChange={handleChange}
-//           placeholder="Enter your Full Name"
-//           required
-//         />
-//         <br />
-
-//         <label htmlFor="phoneNumber">Phone Number:</label>
-//         <input
-//           type="text"
-//           name="phoneNumber"
-//           id="phoneNumber"
-//           value={formData.phoneNumber}
-//           onChange={handleChange}
-//           placeholder="Enter your Phone Number"
-//           required
-//           maxLength="10"
-//           pattern="[0-9]{10}"
-//           title="Please enter a valid 10-digit phone number"
-//         />
-//         <br />
-
-//         <label htmlFor="date">Date:</label>
-//         <input
-//           type="date"
-//           name="date"
-//           id="date"
-//           value={formData.date}
-//           onChange={handleChange}
-//           required
-//           min={new Date().toISOString().split('T')[0]}
-//         />
-//         <br />
-
-//         <label htmlFor="service">Service:</label>
-//         <select
-//           name="service"
-//           id="service"
-//           value={formData.service}
-//           onChange={handleChange}
-//           required
-//         >
-//           <option value="default">Choose Our Services</option>
-//           <option value="haircut">HairCut (Rs.200)</option>
-//           <option value="shaving">Shaving (Rs.150)</option>
-//           <option value="haircut_shaving">HairCut and Shaving (Rs.250)</option>
-//           <option value="hair_color">Hair Color (Rs.500)</option>
-//           <option value="haircut_wash">HairCut and Wash (Rs.350)</option>
-//         </select>
-//         <br />
-
-//         <label htmlFor="time">Time:</label>
-//         <input
-//           type="time"
-//           name="time"
-//           id="time"
-//           value={formData.time}
-//           onChange={handleChange}
-//           required
-//           min="08:00"
-//           max="20:00"
-//         />
-//         <br />
-
-//         <button type="submit">Send</button>
-//       </form>
-
-//       {message && (
-//         <div className="alert-overlay">
-//           <div className={`alert-popup ${message.includes('successful') ? 'success' : 'error'}`}>
-//             <div className="alert-icon">
-//               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-//                 {message.includes('successful') ? (
-//                   <path d="M20 6L9 17l-5-5" />
-//                 ) : (
-//                   <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-//                 )}
-//               </svg>
-//             </div>
-//             <h3>{message.includes('successful') ? 'Success!' : 'Error!'}</h3>
-//             <p>{message}</p>
-//             <button onClick={() => setMessage('')}>OK</button>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../CSS/Book.css';
 
 export default function Booking() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     phoneNumber: '',
     date: '',
     time: '',
     service: 'default',
+    seatNumber: '1',
   });
-
+  const [services, setServices] = useState([]);
+  const [holidays, setHolidays] = useState([]);
   const [message, setMessage] = useState('');
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
+  const [showHolidayAlert, setShowHolidayAlert] = useState(false);
+  const [holidayAlertMessage, setHolidayAlertMessage] = useState('');
+  const [availableSeats, setAvailableSeats] = useState(2);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowAuthAlert(true);
+      setTimeout(() => {
+        navigate('/log');
+      }, 2000);
+    }
+    // Fetch services from backend
+    fetch('http://localhost:5000/api/services')
+      .then(res => res.json())
+      .then(data => setServices(data))
+      .catch(() => setServices([]));
+
+    // Fetch holidays and show alert for upcoming holidays
+    fetch('http://localhost:5000/api/holidays')
+      .then(res => res.json())
+      .then(data => {
+        setHolidays(data);
+        
+        // Check for upcoming holidays
+        const upcomingHolidays = data.filter(holiday => {
+          const holidayDate = new Date(holiday.date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return holidayDate >= today;
+        });
+
+        if (upcomingHolidays.length > 0) {
+          const holidayMessages = upcomingHolidays
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .map(holiday => {
+              const date = new Date(holiday.date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+              return `${date}: ${holiday.reason}`;
+            })
+            .join('\n');
+          
+          setHolidayAlertMessage(holidayMessages);
+          setShowHolidayAlert(true);
+        }
+      })
+      .catch(() => setHolidays([]));
+
+    // Fetch available seats from backend
+    fetch('http://localhost:5000/api/settings/seats')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.seats) setAvailableSeats(data.seats);
+      })
+      .catch(() => setAvailableSeats(2));
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -405,6 +87,26 @@ export default function Booking() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowAuthAlert(true);
+      setTimeout(() => {
+        navigate('/log');
+      }, 2000);
+      return;
+    }
+
+    // Check if selected date is a holiday
+    const selectedDate = new Date(formData.date);
+    const holiday = holidays.find(holiday => {
+      const holidayDate = new Date(holiday.date);
+      return holidayDate.toDateString() === selectedDate.toDateString();
+    });
+
+    if (holiday) {
+      setMessage(`Sorry, we are closed on this date. Reason: ${holiday.reason}`);
+      return;
+    }
 
     if (formData.service === 'default') {
       setMessage('Please select a service.');
@@ -423,6 +125,7 @@ export default function Booking() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'auth-token': token
         },
         body: JSON.stringify({
           fullName: formData.fullName,
@@ -430,11 +133,10 @@ export default function Booking() {
           date: formData.date,
           time: formattedTime,
           service: formData.service,
+          seatNumber: formData.seatNumber,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setMessage('Booking successful!');
         setFormData({
@@ -443,13 +145,10 @@ export default function Booking() {
           date: '',
           time: '',
           service: 'default',
+          seatNumber: '1',
         });
       } else {
-        if (data.error === 'PHONE_ALREADY_EXISTS') {
-          setMessage('This phone number is already used for a booking. Please use another number.');
-        } else {
-          setMessage(data.message);
-        }
+        setMessage(data.message);
       }
     } catch (err) {
       console.error('Booking error:', err);
@@ -459,17 +158,57 @@ export default function Booking() {
 
   return (
     <div className='booking-container'>
+      {showAuthAlert && (
+        <div className="alert-overlay">
+          <div className="alert-popup error">
+            <div className="alert-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3>Authentication Required</h3>
+            <p>Please log in to book an appointment. Redirecting to login page...</p>
+          </div>
+        </div>
+      )}
+
+      {showHolidayAlert && (
+        <div className="alert-overlay">
+          <div className="alert-popup warning">
+            <div className="alert-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3>Holiday Notice</h3>
+            <p style={{ whiteSpace: 'pre-line' }}>{holidayAlertMessage}</p>
+            <button onClick={() => setShowHolidayAlert(false)}>OK</button>
+          </div>
+        </div>
+      )}
+
       <div className="service-time-section animate-fadeInLeft">
         <h3>Service Time</h3>
         <ul className="service-time-list">
-          <li><span className="service-name">Hair Cut</span><span className="service-duration">30 min</span></li>
-          <li><span className="service-name">Hair Cut and Shaving</span><span className="service-duration">45 min</span></li>
-          <li><span className="service-name">Shaving</span><span className="service-duration">15 min</span></li>
-          <li><span className="service-name">HairCut and Wash</span><span className="service-duration">1 hrs</span></li>
-          <li><span className="service-name">Hair Color</span><span className="service-duration">1 hrs</span></li>
+          {services.map(service => {
+            // Convert duration string to minutes
+            let durationText = service.duration;
+            let minMatch = /([0-9]+)\s*min/.exec(service.duration);
+            let min = minMatch ? parseInt(minMatch[1]) : null;
+            if (min !== null && min >= 60) {
+              const hrs = Math.floor(min / 60);
+              const mins = min % 60;
+              durationText = `${hrs} hrs${mins > 0 ? ` ${mins} min` : ''}`;
+            }
+            return (
+              <li key={service._id}>
+                <span className="service-name">{service.name} (Rs.{service.price})</span>
+                <span className="service-duration">{durationText}</span>
+              </li>
+            );
+          })}
         </ul>
       </div>
-
       <form onSubmit={handleSubmit} className="booking-form animate-fadeInRight">
         <label htmlFor="fullName">Full Name:</label>
         <input
@@ -477,24 +216,38 @@ export default function Booking() {
           name="fullName"
           id="fullName"
           value={formData.fullName}
-          onChange={handleChange}
+          onChange={(e) => {
+            // Only allow letters, spaces, and special characters used in names
+            const value = e.target.value;
+            if (value === '' || /^[A-Za-z\s'-]+$/.test(value)) {
+              handleChange(e);
+            }
+          }}
           placeholder="Enter your Full Name"
+          pattern="[A-Za-z\s'-]+"
+          title="Please enter only letters, spaces, hyphens, and apostrophes"
           required
-        /><br />
+        />
+        <br />
 
         <label htmlFor="phoneNumber">Phone Number:</label>
         <input
-          type="text"
+          type="tel"
           name="phoneNumber"
           id="phoneNumber"
           value={formData.phoneNumber}
-          onChange={handleChange}
-          placeholder="Enter your Phone Number"
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value === '' || /^\d{0,10}$/.test(value)) {
+              handleChange(e);
+            }
+          }}
+          placeholder="Enter your 10-digit phone number"
+          pattern="\d{10}"
+          title="Please enter a 10-digit phone number"
           required
-          maxLength="10"
-          pattern="[0-9]{10}"
-          title="Please enter a valid 10-digit phone number"
-        /><br />
+        />
+        <br />
 
         <label htmlFor="date">Date:</label>
         <input
@@ -505,7 +258,16 @@ export default function Booking() {
           onChange={handleChange}
           required
           min={new Date().toISOString().split('T')[0]}
-        /><br />
+          max={(() => {
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 2);
+            return maxDate.toISOString().split('T')[0];
+          })()}
+        />
+        <small className="date-helper-text">
+          You can book appointments for today and the next 2 days only
+        </small>
+        <br />
 
         <label htmlFor="service">Service:</label>
         <select
@@ -516,12 +278,13 @@ export default function Booking() {
           required
         >
           <option value="default">Choose Our Services</option>
-          <option value="haircut">HairCut (Rs.200)</option>
-          <option value="shaving">Shaving (Rs.150)</option>
-          <option value="haircut_shaving">HairCut and Shaving (Rs.250)</option>
-          <option value="hair_color">Hair Color (Rs.500)</option>
-          <option value="haircut_wash">HairCut and Wash (Rs.350)</option>
-        </select><br />
+          {services.map(service => (
+            <option key={service._id} value={service._id}>
+              {service.name} (Rs.{service.price})
+            </option>
+          ))}
+        </select>
+        <br />
 
         <label htmlFor="time">Time:</label>
         <input
@@ -533,7 +296,25 @@ export default function Booking() {
           required
           min="08:00"
           max="20:00"
-        /><br />
+        />
+        <br />
+
+        <label htmlFor="seatNumber">Choose Seat/Barber:</label>
+        <select
+          name="seatNumber"
+          id="seatNumber"
+          value={formData.seatNumber}
+          onChange={handleChange}
+          required
+        >
+          {Array.from({ length: availableSeats }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {`Seat ${i + 1} (Barber ${i + 1})`}
+            </option>
+          ))}
+        </select>
+        <small className="date-helper-text">There are {availableSeats} seats/barbers available for booking.</small>
+        <br />
 
         <button type="submit">Send</button>
       </form>

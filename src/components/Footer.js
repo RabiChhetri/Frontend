@@ -27,12 +27,12 @@ export default function footer() {
             <h5>Headquater</h5>
             <ul class="nav flex-column">
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">
+                <a href="https://maps.google.com" class="nav-link p-0 text-body-secondary">
                   Malepatan-0km,Pokhara
                 </a>
               </li>
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">
+                <a href="https://maps.google.com" class="nav-link p-0 text-body-secondary">
                   Address: 6X9G+MRW, Pokhara 33700
                 </a>
               </li>
@@ -42,10 +42,10 @@ export default function footer() {
             <h5>Opening Hours</h5>
             <ul class="nav flex-column">
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">Sun-Fri: 7am-8pm</a>
+                <a href="#" class="nav-link p-0 text-body-secondary">Sun-Fri: 7am-8pm</a>
               </li>
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">Sat: 10am-5pm</a>
+                <a href="#" class="nav-link p-0 text-body-secondary">Sat: 10am-5pm</a>
               </li>
             </ul>
           </div>
@@ -53,16 +53,43 @@ export default function footer() {
             <h5>Contact</h5>
             <ul class="nav flex-column">
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">
+                <a href="mailto:astarunisexsalon@gmail.com" class="nav-link p-0 text-body-secondary">
                   astarunisexsalon@gmail.com
                 </a>
               </li>
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 text-body-secondary">+977 9816693492</a>
+                <a href="tel:+9779816693492" class="nav-link p-0 text-body-secondary">+977 9816693492</a>
               </li>
             </ul>
           </div>
         </footer>
+      </div>
+
+      <div className="footer-links">
+        <button 
+          className="footer-link"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          Home
+        </button>
+        <button 
+          className="footer-link"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          About
+        </button>
+        <button 
+          className="footer-link"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          Services
+        </button>
+        <button 
+          className="footer-link"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          Contact
+        </button>
       </div>
     </div>
   );

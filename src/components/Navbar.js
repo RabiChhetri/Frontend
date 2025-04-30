@@ -1,12 +1,22 @@
-import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    console.log(location.pathname);
+    // Check authentication status when component mounts and when location changes
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
   }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    navigate('/');
+  };
 
   return (
     <div>
@@ -54,15 +64,34 @@ function Navbar() {
                   Book Appointment
                 </Link>
               </li>
+              {isAuthenticated && (
+                <>
+                  <li className="nav-item">
+                    <Link className={`nav-link ${location.pathname === "/bookinglist" ? "active" : ""}`} to="/bookinglist">
+                      Booking list
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`} to="/profile">
+                      Profile
+                    </Link>
+                  </li>
+                </>
+              )}
               <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/bookinglist" ? "active" : ""}`} to="/bookinglist">
-                  Booking list
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/log" ? "active" : ""}`} to="/log">
-                  Log In
-                </Link>
+                {isAuthenticated ? (
+                  <button 
+                    className="nav-link" 
+                    onClick={handleLogout}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link className={`nav-link ${location.pathname === "/log" ? "active" : ""}`} to="/log">
+                    Log In
+                  </Link>
+                )}
               </li>
             </ul>
           </div>

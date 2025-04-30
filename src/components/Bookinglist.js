@@ -1,340 +1,110 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import './Bookinglist.css';
-
-// export default function Bookinglist() {
-//   const [bookings, setBookings] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [isAuthenticated, setIsAuthenticated] = useState(false);
-//   const [showCancelModal, setShowCancelModal] = useState(false);
-//   const [cancelPhoneNumber, setCancelPhoneNumber] = useState('');
-//   const [cancelMessage, setCancelMessage] = useState('');
-//   const [selectedBooking, setSelectedBooking] = useState(null);
-
-//   useEffect(() => {
-//     // Check if user is authenticated
-//     const token = localStorage.getItem('token');
-//     setIsAuthenticated(!!token);
-//   }, []);
-
-//   const checkAuthAndBook = () => {
-//     if (!isAuthenticated) {
-//       alert('Please log in to book an appointment. You will be redirected to the login page.');
-//       // You can add navigation to login page here if needed
-//       return false;
-//     }
-//     return true;
-//   };
-
-//   const handleCancelClick = (booking) => {
-//     setSelectedBooking(booking);
-//     setCancelPhoneNumber(booking.phoneNumber || '');
-//     setShowCancelModal(true);
-//   };
-
-//   const handleCancelAppointment = async () => {
-//     if (!cancelPhoneNumber) {
-//       setCancelMessage('Please enter your phone number');
-//       return;
-//     }
-
-//     try {
-//       const response = await axios.delete('http://localhost:5000/api/book/cancel', {
-//         data: { phoneNumber: cancelPhoneNumber }
-//       });
-
-//       if (response.data.success) {
-//         setCancelMessage('Appointment cancelled successfully');
-//         setShowCancelModal(false);
-//         setCancelPhoneNumber('');
-//         setSelectedBooking(null);
-//         // Refresh the bookings list
-//         fetchBookings();
-//       }
-//     } catch (error) {
-//       setCancelMessage(error.response?.data?.message || 'Failed to cancel appointment');
-//     }
-//   };
-
-//   const formatServiceName = (service) => {
-//     const serviceMap = {
-//       'haircut': 'HairCut (Rs.200)',
-//       'shaving': 'Shaving (Rs.150)',
-//       'haircut_shaving': 'HairCut and Shaving (Rs.250)',
-//       'hair_color': 'Hair Color (Rs.500)',
-//       'haircut_wash': 'HairCut and Wash (Rs.350)'
-//     };
-//     return serviceMap[service] || service;
-//   };
-
-//   const calculateCompletionTime = (service, appointmentTime) => {
-//     const serviceDurations = {
-//       'haircut': 30, // minutes
-//       'shaving': 15,
-//       'haircut_shaving': 45,
-//       'hair_color': 60,
-//       'haircut_wash': 40
-//     };
-
-//     const duration = serviceDurations[service] || 30;
-//     const [hours, minutes] = appointmentTime.split(':');
-//     const date = new Date();
-//     date.setHours(parseInt(hours));
-//     date.setMinutes(parseInt(minutes));
-//     date.setMinutes(date.getMinutes() + duration);
-    
-//     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-//   };
-
-//   const formatDate = (dateString) => {
-//     const options = { 
-//       weekday: 'long', 
-//       year: 'numeric', 
-//       month: 'long', 
-//       day: 'numeric' 
-//     };
-//     return new Date(dateString).toLocaleDateString('en-US', options);
-//   };
-
-//   const handleBooking = async (bookingData) => {
-//     // Check authentication before proceeding with booking
-//     if (!checkAuthAndBook()) {
-//       return;
-//     }
-
-//     try {
-//       const token = localStorage.getItem('token');
-//       const response = await axios.post("http://localhost:5000/api/book", bookingData, {
-//         headers: {
-//           'auth-token': token
-//         }
-//       });
-//       // Handle successful booking
-//       alert('Appointment booked successfully!');
-//       // Refresh the bookings list
-//       fetchBookings();
-//     } catch (error) {
-//       console.error("Error booking appointment", error);
-//       alert(error.response?.data?.error || 'Failed to book appointment');
-//     }
-//   };
-
-//   const fetchBookings = async () => {
-//     try {
-//       const res = await axios.get("http://localhost:5000/api/book");
-//       setBookings(res.data);
-//       setLoading(false);
-//     } catch (error) {
-//       console.error("Error fetching bookings", error);
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchBookings();
-//   }, []);
-
-//   if (loading) return (
-//     <div className="loading-container">
-//       <p className="loading-text">Loading appointments...</p>
-//     </div>
-//   );
-
-//   return (
-//     <div className="booking-list-container">
-//       <div className="booking-list-header">
-//         <h1 className="booking-list-title">Today's Schedule</h1>
-//         <div className="booking-stats">
-//           <span className="total-bookings">{bookings.length} appointments</span>
-//         </div>
-//       </div>
-      
-//       {showCancelModal && (
-//         <div className="cancel-modal">
-//           <div className="cancel-modal-content">
-//             <h3>Cancel Appointment</h3>
-//             <p>Please confirm to cancel your appointment</p>
-//             <input
-//               type="text"
-//               placeholder="Enter your phone number"
-//               value={cancelPhoneNumber}
-//               onChange={(e) => setCancelPhoneNumber(e.target.value)}
-//               maxLength="10"
-//               pattern="[0-9]{10}"
-//             />
-//             {cancelMessage && (
-//               <p className={`cancel-message ${cancelMessage.includes('successfully') ? 'success' : 'error'}`}>
-//                 {cancelMessage}
-//               </p>
-//             )}
-//             <div className="cancel-modal-buttons">
-//               <button onClick={handleCancelAppointment}>Cancel Appointment</button>
-//               <button onClick={() => {
-//                 setShowCancelModal(false);
-//                 setCancelPhoneNumber('');
-//                 setCancelMessage('');
-//                 setSelectedBooking(null);
-//               }}>Close</button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-      
-//       {bookings.length === 0 ? (
-//         <div className="no-appointments">
-//           <p>No appointments scheduled for today</p>
-//         </div>
-//       ) : (
-//         <div className="booking-cards">
-//           {bookings.map((booking) => (
-//             <div key={booking._id} className="booking-card">
-//               <div className="booking-card-header">
-//                 <div className="booking-header-content">
-//                   <h2 className="booking-name">👤 {booking.fullName}</h2>
-//                   <p className="booking-phone">{booking.phoneNumber}</p>
-//                   <p className="booking-date">
-//                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-//                       <path d="M6.75 2.5A.75.75 0 017.5 1.75h9a.75.75 0 010 1.5h-9A.75.75 0 016.75 2.5zM4 5.75A.75.75 0 014.75 5h14.5a.75.75 0 010 1.5H4.75A.75.75 0 014 5.75zM1 8.75A.75.75 0 011.75 8h20.5a.75.75 0 010 1.5H1.75A.75.75 0 011 8.75zM1.75 12a.75.75 0 000 1.5h20.5a.75.75 0 000-1.5H1.75z"/>
-//                     </svg>
-//                     {formatDate(booking.date)}
-//                   </p>
-//                 </div>
-//               </div>
-
-//               <div className="booking-details">
-//                 <div className="booking-service">
-//                   {formatServiceName(booking.service)}
-//                 </div>
-
-//                 <div className="booking-time-info">
-//                   <div className="time-block">
-//                     <span className="time-value">{booking.time}</span>
-//                     <span className="time-label">Appointment Time</span>
-//                   </div>
-//                   <div className="time-block">
-//                     <span className="time-value">{calculateCompletionTime(booking.service, booking.time)}</span>
-//                     <span className="time-label">Completion Time</span>
-//                   </div>
-//                 </div>
-
-//                 <button 
-//                   className="card-cancel-btn"
-//                   onClick={() => handleCancelClick(booking)}
-//                 >
-//                   Cancel Appointment
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import './Bookinglist.css';
+import '../CSS/Bookinglist.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Bookinglist() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [cancelPhoneNumber, setCancelPhoneNumber] = useState('');
+  const [cancelPassword, setCancelPassword] = useState('');
   const [cancelMessage, setCancelMessage] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [currentViewDate, setCurrentViewDate] = useState(new Date());
+  const [services, setServices] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is authenticated
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
+    // Fetch services from backend
+    axios.get('http://localhost:5000/api/services')
+      .then(res => setServices(res.data))
+      .catch(() => setServices([]));
   }, []);
 
-  const checkAuthAndBook = () => {
-    if (!isAuthenticated) {
-      alert('Please log in to book an appointment. You will be redirected to the login page.');
-      // You can add navigation to login page here if needed
-      return false;
-    }
-    return true;
-  };
-
   const handleCancelClick = (booking) => {
+    if (!isAuthenticated) {
+      alert('Please log in to cancel appointments');
+      navigate('/log');
+      return;
+    }
     setSelectedBooking(booking);
-    setCancelPhoneNumber(booking.phoneNumber || '');
+    setCancelPassword('');
+    setCancelMessage('');
     setShowCancelModal(true);
   };
 
   const handleCancelAppointment = async () => {
-    if (!cancelPhoneNumber) {
-      setCancelMessage('Please enter your phone number');
+    if (!cancelPassword) {
+      setCancelMessage('Please enter your login password');
+      return;
+    }
+
+    if (!selectedBooking) {
+      setCancelMessage('No appointment selected');
       return;
     }
 
     try {
-      const response = await axios.delete('http://localhost:5000/api/book/cancel', {
-        data: { phoneNumber: cancelPhoneNumber }
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`http://localhost:5000/api/book/${selectedBooking._id}`, {
+        headers: {
+          'auth-token': token
+        }
       });
 
-      if (response.data.success) {
+      if (response.data.message === "Booking cancelled successfully") {
         setCancelMessage('Appointment cancelled successfully');
         setShowCancelModal(false);
-        setCancelPhoneNumber('');
+        setCancelPassword('');
         setSelectedBooking(null);
         // Refresh the bookings list
         fetchBookings();
       }
     } catch (error) {
-      setCancelMessage(error.response?.data?.message || 'Failed to cancel appointment');
+      const errorMessage = error.response?.data?.message || 'Failed to cancel appointment';
+      setCancelMessage(errorMessage);
     }
   };
 
-  const formatServiceName = (service) => {
-    const serviceMap = {
-      'haircut': 'HairCut (Rs.200)',
-      'shaving': 'Shaving (Rs.150)',
-      'haircut_shaving': 'HairCut and Shaving (Rs.250)',
-      'hair_color': 'Hair Color (Rs.500)',
-      'haircut_wash': 'HairCut and Wash (Rs.350)'
-    };
-    return serviceMap[service] || service;
+  // Helper to get service object by id
+  const getServiceById = (id) => services.find(s => s._id === id) || {};
+
+  const formatServiceName = (serviceId) => {
+    const service = getServiceById(serviceId);
+    return service.name && service.price ? `${service.name} (Rs.${service.price})` : serviceId;
   };
 
-  const calculateCompletionTime = (service, appointmentTime) => {
-    const serviceDurations = {
-      'haircut': 30, // minutes
-      'shaving': 15,
-      'haircut_shaving': 45,
-      'hair_color': 60,
-      'haircut_wash': 40
-    };
-
-    const duration = serviceDurations[service] || 30;
-    
+  const calculateCompletionTime = (serviceId, appointmentTime) => {
+    const service = getServiceById(serviceId);
+    let duration = 30;
+    if (service.duration) {
+      if (service.duration.includes('min')) {
+        duration = parseInt(service.duration);
+      } else if (service.duration.includes('hr')) {
+        duration = parseInt(service.duration) * 60;
+      }
+    }
     // Parse the appointment time properly
-    const [time, period] = appointmentTime.split(' '); // Split time and AM/PM
+    const [time, period] = appointmentTime.split(' ');
     const [hours, minutes] = time.split(':');
-    
-    // Convert hours to 24-hour format if needed
     let hour = parseInt(hours);
-    if (period.toUpperCase() === 'PM' && hour !== 12) {
+    if (period && period.toUpperCase() === 'PM' && hour !== 12) {
       hour += 12;
-    } else if (period.toUpperCase() === 'AM' && hour === 12) {
+    } else if (period && period.toUpperCase() === 'AM' && hour === 12) {
       hour = 0;
     }
-
     const date = new Date();
     date.setHours(hour);
     date.setMinutes(parseInt(minutes));
     date.setMinutes(date.getMinutes() + duration);
-    
-    // Format the time back to 12-hour format with AM/PM
-    return date.toLocaleTimeString([], { 
-      hour: '2-digit', 
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
   };
 
@@ -348,43 +118,91 @@ export default function Bookinglist() {
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
-  const handleBooking = async (bookingData) => {
-    // Check authentication before proceeding with booking
-    if (!checkAuthAndBook()) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post("http://localhost:5000/api/book", bookingData, {
-        headers: {
-          'auth-token': token
-        }
-      });
-      // Handle successful booking
-      alert('Appointment booked successfully!');
-      // Refresh the bookings list
-      fetchBookings();
-    } catch (error) {
-      console.error("Error booking appointment", error);
-      alert(error.response?.data?.error || 'Failed to book appointment');
-    }
+  const isWithinBookingHours = () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    return currentHour >= 8 && currentHour < 20; // 8 AM to 8 PM
   };
 
-  const fetchBookings = async () => {
+  // Convert time string to Date object for sorting
+  const timeStringToDate = (timeStr, dateStr) => {
+    const [time, period] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (period.toUpperCase() === 'PM' && hours !== 12) hours += 12;
+    if (period.toUpperCase() === 'AM' && hours === 12) hours = 0;
+    const date = new Date(dateStr);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
+  // Sort bookings by time
+  const sortBookings = useCallback((bookingsArray) => {
+    return [...bookingsArray].sort((a, b) => {
+      const dateA = timeStringToDate(a.time, a.date);
+      const dateB = timeStringToDate(b.time, b.date);
+      return dateA - dateB;
+    });
+  }, []);
+
+  const fetchBookings = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/book");
-      setBookings(res.data);
+      setLoading(true);
+      const now = new Date();
+      let targetDate = new Date(now);
+
+      // If current time is after 8 PM (20:00), show tomorrow's appointments
+      if (now.getHours() >= 20) {
+        targetDate.setDate(targetDate.getDate() + 1);
+      }
+
+      const dateParam = targetDate.toISOString().split('T')[0];
+      const res = await axios.get(`http://localhost:5000/api/book?date=${dateParam}`);
+      // Sort the bookings before setting state
+      const sortedBookings = sortBookings(res.data);
+      setBookings(sortedBookings);
+      setCurrentViewDate(targetDate);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching bookings", error);
       setLoading(false);
     }
-  };
+  }, [sortBookings]);
 
   useEffect(() => {
-    fetchBookings();
-  }, []);
+    fetchBookings(); // Initial fetch
+
+    // Set up interval to check and update appointments
+    const interval = setInterval(() => {
+      const now = new Date();
+      const currentHour = now.getHours();
+      
+      // Refresh at 8 PM to switch to next day's appointments
+      if (currentHour === 20 && now.getMinutes() === 0) {
+        fetchBookings();
+      }
+      
+      // Also refresh every 5 minutes to keep appointments up to date
+      fetchBookings();
+    }, 5 * 60 * 1000); // Check every 5 minutes
+
+    return () => clearInterval(interval);
+  }, [fetchBookings]);
+
+  const shouldDisplayAppointment = (booking) => {
+    const now = new Date();
+    const bookingDate = new Date(booking.date);
+    const currentHour = now.getHours();
+    
+    // After 8 PM, only show tomorrow's appointments
+    if (currentHour >= 20) {
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return bookingDate.toDateString() === tomorrow.toDateString();
+    }
+    
+    // During business hours (8 AM - 8 PM), show today's appointments
+    return bookingDate.toDateString() === now.toDateString();
+  };
 
   if (loading) return (
     <div className="loading-container">
@@ -395,9 +213,16 @@ export default function Bookinglist() {
   return (
     <div className="booking-list-container">
       <div className="booking-list-header">
-        <h1 className="booking-list-title">Today's Schedule</h1>
+        <h1 className="booking-list-title">
+          {isWithinBookingHours() 
+            ? `Today's Schedule (${formatDate(currentViewDate)})` 
+            : `Tomorrow's Schedule (${formatDate(currentViewDate)})`
+          }
+        </h1>
         <div className="booking-stats">
-          <span className="total-bookings">{bookings.length} appointments</span>
+          <span className="total-bookings">
+            {bookings.filter(shouldDisplayAppointment).length} appointments
+          </span>
         </div>
       </div>
       
@@ -405,14 +230,12 @@ export default function Bookinglist() {
         <div className="cancel-modal">
           <div className="cancel-modal-content">
             <h3>Cancel Appointment</h3>
-            <p>Please confirm to cancel your appointment</p>
+            <p>Please enter your login password to cancel the appointment</p>
             <input
-              type="text"
-              placeholder="Enter your phone number"
-              value={cancelPhoneNumber}
-              onChange={(e) => setCancelPhoneNumber(e.target.value)}
-              maxLength="10"
-              pattern="[0-9]{10}"
+              type="password"
+              placeholder="Enter your login password"
+              value={cancelPassword}
+              onChange={(e) => setCancelPassword(e.target.value)}
             />
             {cancelMessage && (
               <p className={`cancel-message ${cancelMessage.includes('successfully') ? 'success' : 'error'}`}>
@@ -423,7 +246,7 @@ export default function Bookinglist() {
               <button onClick={handleCancelAppointment}>Cancel Appointment</button>
               <button onClick={() => {
                 setShowCancelModal(false);
-                setCancelPhoneNumber('');
+                setCancelPassword('');
                 setCancelMessage('');
                 setSelectedBooking(null);
               }}>Close</button>
@@ -438,46 +261,51 @@ export default function Bookinglist() {
         </div>
       ) : (
         <div className="booking-cards">
-          {bookings.map((booking) => (
-            <div key={booking._id} className="booking-card">
-              <div className="booking-card-header">
-                <div className="booking-header-content">
-                  <h2 className="booking-name">👤 {booking.fullName}</h2>
-                  <p className="booking-phone">{booking.phoneNumber}</p>
-                  <p className="booking-date">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M6.75 2.5A.75.75 0 017.5 1.75h9a.75.75 0 010 1.5h-9A.75.75 0 016.75 2.5zM4 5.75A.75.75 0 014.75 5h14.5a.75.75 0 010 1.5H4.75A.75.75 0 014 5.75zM1 8.75A.75.75 0 011.75 8h20.5a.75.75 0 010 1.5H1.75A.75.75 0 011 8.75zM1.75 12a.75.75 0 000 1.5h20.5a.75.75 0 000-1.5H1.75z"/>
-                    </svg>
-                    {formatDate(booking.date)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="booking-details">
-                <div className="booking-service">
-                  {formatServiceName(booking.service)}
-                </div>
-
-                <div className="booking-time-info">
-                  <div className="time-block">
-                    <span className="time-value">{booking.time}</span>
-                    <span className="time-label">Appointment Time</span>
-                  </div>
-                  <div className="time-block">
-                    <span className="time-value">{calculateCompletionTime(booking.service, booking.time)}</span>
-                    <span className="time-label">Completion Time</span>
+          {bookings
+            .filter(shouldDisplayAppointment)
+            .map((booking) => (
+              <div key={booking._id} className="booking-card">
+                <div className="booking-card-header">
+                  <div className="booking-header-content">
+                    <h2 className="booking-name">👤 {booking.fullName}</h2>
+                    {/* <p className="booking-phone">{booking.phoneNumber}</p> */}
+                    <p className="booking-date">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.75 2.5A.75.75 0 017.5 1.75h9a.75.75 0 010 1.5h-9A.75.75 0 016.75 2.5zM4 5.75A.75.75 0 014.75 5h14.5a.75.75 0 010 1.5H4.75A.75.75 0 014 5.75zM1 8.75A.75.75 0 011.75 8h20.5a.75.75 0 010 1.5H1.75A.75.75 0 011 8.75zM1.75 12a.75.75 0 000 1.5h20.5a.75.75 0 000-1.5H1.75z"/>
+                      </svg>
+                      {formatDate(booking.date)}
+                    </p>
                   </div>
                 </div>
 
-                <button 
-                  className="card-cancel-btn"
-                  onClick={() => handleCancelClick(booking)}
-                >
-                  Cancel Appointment
-                </button>
+                <div className="booking-details">
+                  <div className="booking-service">
+                    {formatServiceName(booking.service)}
+                  </div>
+                  <div className="booking-seat-info">
+                    <span className="seat-label">Seat {booking.seatNumber}</span>
+                  </div>
+
+                  <div className="booking-time-info">
+                    <div className="time-block">
+                      <span className="time-value">{booking.time}</span>
+                      <span className="time-label">Appointment Time</span>
+                    </div>
+                    <div className="time-block">
+                      <span className="time-value">{calculateCompletionTime(booking.service, booking.time)}</span>
+                      <span className="time-label">Completion Time</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    className="card-cancel-btn"
+                    onClick={() => handleCancelClick(booking)}
+                  >
+                    Cancel Appointment
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>

@@ -1,9 +1,20 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faScissors,faRulerHorizontal,faBrush,faShower} from '@fortawesome/free-solid-svg-icons';
-import {Link} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export default function Home() {
+  const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem('token');
+
+  const handleAppointmentClick = () => {
+    if (isLoggedIn) {
+      navigate('/booking');
+    } else {
+      navigate('/log');
+    }
+  };
+
   return (
     <>
 
@@ -23,7 +34,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5" stlye={{}}> */}
             <div
-              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
+              className="carousel-caption text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -37,14 +48,12 @@ export default function Home() {
                   appreciate
                   <br /> premium quality, time and flawless look.
                 </p>
-                <Link
-                  to="/log"
+                <button
+                  onClick={handleAppointmentClick}
                   className="btn btn-md btn-map animate-zoomIn"
-                  role="button"
-                  aria-pressed="true"
                 >
                   Make Appointment
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -57,7 +66,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5 "> */}
             <div
-              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
+              className="carousel-caption text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -73,14 +82,12 @@ export default function Home() {
                   <br /> premium quality, time and flawless look.
                 </p>
                 {/* <button type="button" className="btn btn-map" href="logo.com"></button> */}
-                <Link
-                  to="/log"
+                <button
+                  onClick={handleAppointmentClick}
                   className="btn btn-md btn-map animate-zoomIn"
-                  role="button"
-                  aria-pressed="true"
                 >
                   Make Appointment
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -93,7 +100,7 @@ export default function Home() {
             />
             {/* <div className="carousel-caption d-none d-md-block text-start start-0 ps-5"> */}
             <div
-              className="carousel-caption d-none d-md-block text-start animate-fadeInUp"
+              className="carousel-caption text-start animate-fadeInUp"
               style={{ top: "50px", left: "20%" }}
             >
               <div className="slider_content">
@@ -107,14 +114,12 @@ export default function Home() {
                   appreciate
                   <br /> premium quality, time and flawless look.
                 </p>
-                <Link
-                  to="/log"
+                <button
+                  onClick={handleAppointmentClick}
                   className="btn btn-md btn-map animate-zoomIn"
-                  role="button"
-                  aria-pressed="true"
                 >
                   Make Appointment
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -181,8 +186,6 @@ export default function Home() {
                 <a
                   href="/"
                   className="btn btn-md btn-map betn-about animate-zoomIn"
-                  role="button"
-                  aria-pressed="true"
                   style={{
                     display: "block",
                     textAlign: "center",
