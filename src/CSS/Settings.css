@@ -1,0 +1,641 @@
+/* Theme Color */
+:root {
+  --theme-color: #2c3e50;
+  --theme-color-light: #34495e;
+  --theme-color-dark: #22303a;
+}
+
+/* Sidebar (if styled here) */
+.sidebar {
+  background: var(--theme-color);
+  color: #fff;
+}
+.sidebar .active, .sidebar .selected {
+  background: var(--theme-color-light);
+}
+.sidebar a, .sidebar .icon {
+  color: #fff;
+}
+
+/* Main Layout */
+.admin-dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 250px;
+}
+
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Alert Messages */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+/* Settings Sections */
+.settings-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgb(44 62 80 / 0.08), 0 2px 4px -2px rgb(44 62 80 / 0.08);
+  border: 1.5px solid var(--theme-color-light);
+}
+
+.settings-section h3, .settings-section h4, .settings-section label {
+  color: var(--theme-color);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  background: linear-gradient(45deg, #4a90e2, #6a82fb);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+}
+
+/* Holiday Form */
+.holiday-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  transition: all 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.12);
+}
+
+.holiday-form button {
+  background: var(--theme-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  align-self: flex-end;
+  box-shadow: 0 2px 8px 0 var(--theme-color-light, #34495e22);
+}
+.holiday-form button:hover {
+  background: var(--theme-color-light);
+  box-shadow: 0 4px 16px 0 var(--theme-color, #2c3e5022);
+}
+
+/* Holidays List */
+.holidays-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.holiday-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--item-bg);
+  margin-bottom: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.holiday-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.holiday-item span {
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.holiday-item button {
+  background: linear-gradient(45deg, #ff6b6b, #ee5253);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.holiday-item button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(238, 82, 83, 0.2);
+}
+
+/* Theme Variables */
+[data-theme="light"] {
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --text-color: #2d3748;
+  --heading-color: #1a202c;
+  --border-color: #e2e8f0;
+  --input-bg: #ffffff;
+  --item-bg: #f8fafc;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a202c;
+  --card-bg: #2d3748;
+  --text-color: #e2e8f0;
+  --heading-color: #f7fafc;
+  --border-color: #4a5568;
+  --input-bg: #2d3748;
+  --item-bg: #2d3748;
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .holiday-form label {
+  color: #f7fafc;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* --- Holidays Title with Icon --- */
+.holidays-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--theme-color);
+  margin-bottom: 1.5rem;
+}
+.holidays-title-icon {
+  color: var(--theme-color);
+}
+
+/* --- Glassmorphism Card --- */
+.glass-card {
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.10);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  border: 1.5px solid rgba(124, 58, 237, 0.10);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="dark"] .glass-card {
+  background: rgba(35, 41, 70, 0.75);
+  box-shadow: 0 8px 32px 0 #a78bfa22, 0 1.5px 8px 0 #0003;
+  border: 1.5px solid #a78bfa33;
+}
+
+/* --- Accent Bar --- */
+.holiday-accent-bar {
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--theme-color) 0%, var(--theme-color-light) 100%);
+  border-radius: 8px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* --- Improved Holiday Card Layout --- */
+.holiday-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  border: 1.5px solid var(--theme-color-light);
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px 0 var(--theme-color-light, #34495e11);
+}
+.holiday-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 var(--theme-color, #2c3e5011);
+}
+.holiday-card-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.holiday-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--theme-color-light);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+[data-theme="dark"] .holiday-icon {
+  color: #a78bfa;
+  background: #312e81;
+  box-shadow: 0 0 12px 2px #a78bfa55;
+}
+.holiday-date {
+  display: block;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+.holiday-reason {
+  display: block;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+[data-theme="dark"] .holiday-reason {
+  color: #c4b5fd;
+}
+
+/* --- Glass Button --- */
+.glass-btn {
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 16px 0 #a78bfa33, 0 1.5px 8px 0 #0002;
+  font-weight: 600;
+  font-size: 1.01rem;
+  padding: 0.7rem 1.3rem;
+  transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
+  border: none;
+}
+.glass-btn:hover {
+  box-shadow: 0 4px 24px 0 #a78bfa55, 0 2px 12px 0 #0003;
+  transform: scale(1.04);
+}
+
+@media (max-width: 600px) {
+  .holiday-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1rem 1rem 1.7rem;
+  }
+  .glass-btn {
+    margin-top: 0.7rem;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* --- Dark Mode Enhancements --- */
+[data-theme="dark"] .settings-section {
+  background: linear-gradient(135deg, #232946 60%, #2d3250 100%);
+  box-shadow: 0 6px 32px 0 rgba(124, 58, 237, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.18);
+  border-radius: 18px;
+}
+[data-theme="dark"] .holiday-card {
+  background: linear-gradient(90deg, #232946 80%, #3a2e5c 100%);
+  border-left: 6px solid #a78bfa;
+  box-shadow: 0 2px 18px 0 rgba(124, 58, 237, 0.18);
+}
+[data-theme="dark"] .holiday-card:hover {
+  box-shadow: 0 8px 32px 0 #a78bfa44, 0 2px 12px 0 #0003;
+  transform: translateY(-3px) scale(1.015);
+}
+[data-theme="dark"] .holiday-icon {
+  color: #a78bfa;
+  background: #312e81;
+  box-shadow: 0 0 8px 2px #a78bfa55;
+}
+[data-theme="dark"] .holiday-date {
+  color: #f7fafc;
+}
+[data-theme="dark"] .holiday-reason {
+  color: #c4b5fd;
+  font-weight: 500;
+}
+[data-theme="dark"] .holiday-delete-btn {
+  background: linear-gradient(45deg, #ff6b6b, #a78bfa);
+  box-shadow: 0 0 12px 2px #a78bfa33;
+}
+[data-theme="dark"] .holiday-delete-btn:hover {
+  background: linear-gradient(45deg, #a78bfa, #ff6b6b);
+  box-shadow: 0 0 18px 4px #a78bfa55;
+}
+[data-theme="dark"] .holiday-form button {
+  box-shadow: 0 0 12px 2px #a78bfa33;
+}
+[data-theme="dark"] .holiday-form button:hover {
+  box-shadow: 0 0 18px 4px #a78bfa55;
+}
+
+/* --- Seat Management Card --- */
+.seats-card {
+  background: rgba(124, 58, 237, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.10);
+  border-radius: 1.5rem;
+  border: 1.5px solid rgba(124, 58, 237, 0.10);
+  position: relative;
+  overflow: hidden;
+  padding: 2.2rem 2rem 2rem 2rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.seats-card:hover {
+  box-shadow: 0 12px 32px 0 #a78bfa33, 0 2px 12px 0 #0002;
+  transform: translateY(-2px) scale(1.01);
+}
+
+.seats-icon-bg {
+  background: linear-gradient(135deg, #a78bfa 60%, #7c3aed 100%);
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 0 18px 4px #a78bfa33;
+}
+.seats-icon-bg svg {
+  color: #fff;
+  font-size: 2.5rem;
+}
+
+.seats-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.seats-form {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.seats-form .form-group {
+  width: 100%;
+}
+
+#seats {
+  font-size: 1.3rem;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 2px solid #a78bfa;
+  background: #f8f6ff;
+  color: #7c3aed;
+  font-weight: 600;
+  text-align: center;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+#seats:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px #a78bfa33;
+}
+
+.update-seats-btn {
+  background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+  color: #fff;
+  border: none;
+  padding: 1rem 0;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  width: 100%;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.13);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.update-seats-btn:hover {
+  background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.18);
+}
+
+@media (max-width: 600px) {
+  .seats-card {
+    padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+  }
+  .seats-form {
+    max-width: 100%;
+  }
+}
+
+/* --- Modern Seats Card --- */
+.seats-modern-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgb(44 62 80 / 0.08), 0 2px 4px -2px rgb(44 62 80 / 0.08);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid var(--theme-color-light);
+}
+
+.seats-modern-icon-bg {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+}
+
+.seats-modern-icon-bg svg {
+  width: 40px;
+  height: 40px;
+  color: #4b5563;
+}
+
+.seats-modern-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--theme-color);
+  margin-bottom: 1.5rem;
+}
+
+.seats-modern-form {
+  max-width: 400px;
+}
+
+.seats-modern-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.seats-modern-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.seats-stepper-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid var(--theme-color-light);
+  background: white;
+  color: var(--theme-color);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.seats-stepper-btn:hover:not(:disabled) {
+  background: var(--theme-color-light);
+  color: #fff;
+}
+
+.seats-stepper-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.seats-modern-input {
+  width: 80px;
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.seats-modern-input:focus {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.12);
+}
+
+.seats-modern-btn {
+  background: var(--theme-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 var(--theme-color-light, #34495e22);
+}
+
+.seats-modern-btn:hover:not(:disabled) {
+  background: var(--theme-color-light);
+  box-shadow: 0 4px 16px 0 var(--theme-color, #2c3e5022);
+}
+
+.seats-modern-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Holiday Management Section */
+.holiday-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  }
+
+.holiday-delete-btn:hover {
+  background: #fecaca;
+  }
+
+.delete-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .delete-text {
+    display: inline;
+  }
+} 

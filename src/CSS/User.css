@@ -1,0 +1,428 @@
+.admin-dashboard-root {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+  }
+  
+  .admin-main-content {
+    flex: 1;
+    padding: 1rem;
+    margin-left: 0;
+  }
+  
+  .appointments-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem 2rem 2rem;
+    margin-top: 0.5rem;
+  }
+  
+  .appointments-table-wrapper {
+    overflow-x: auto;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  
+  .appointments-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 0;
+  }
+  
+  .appointments-table th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .appointments-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eef2f7;
+    color: #2c3e50;
+    vertical-align: middle;
+  }
+  
+  .appointments-table td:last-child {
+    white-space: nowrap;
+    text-align: right;
+  }
+  
+  .appointments-table tr:hover {
+    background-color: #eaf1fb;
+    transition: background-color 0.2s;
+  }
+  
+  .action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-right: 0.5rem;
+  }
+  
+  .edit-btn {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .edit-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+  }
+  
+  .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-1px);
+  }
+  
+  .complete-btn {
+    background-color: #27ae60;
+    color: white;
+  }
+  
+  .complete-btn:hover {
+    background-color: #219150;
+    transform: translateY(-1px);
+  }
+  
+  /* Modal Styles */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .modal-content h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .modal-content input {
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .modal-content input:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  .modal-content .action-btn {
+    margin-top: 1rem;
+  }
+  
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+  
+  .loading-state p {
+    color: #2c3e50;
+    font-size: 1.1rem;
+  }
+  
+  /* Animations */
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Header Styles */
+  .appointments-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .appointments-header h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    margin: 0;
+  }
+  
+  .attractive-search {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 0.1rem 1rem 0.1rem 1rem;
+    margin-bottom: 0;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 0.9rem 1.2rem 0.9rem 2.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    background: transparent;
+    color: #2c3e50;
+    box-shadow: none;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    background: #f5f7fa;
+  }
+  
+  .search-input::placeholder {
+    color: #a0aec0;
+    font-size: 1.05rem;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.2rem;
+    color: #a0aec0;
+    pointer-events: none;
+  }
+  
+  /* Table Icon Styles */
+  .appointments-table th svg {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  
+  /* Button Icon Styles */
+  .action-btn svg {
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  
+  /* Form Group Styles */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
+  }
+  
+  .form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  /* Modal Actions */
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  /* Loading Spinner */
+  .spinner {
+    animation: spin 1s linear infinite;
+    margin-right: 1rem;
+    color: #3498db;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .admin-main-content {
+      padding: 0.5rem;
+    }
+  
+    .appointments-container {
+      padding: 1rem;
+    }
+  
+    .appointments-table th,
+    .appointments-table td {
+      padding: 0.75rem;
+      font-size: 0.9rem;
+    }
+  
+    .action-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+    }
+  
+    .appointments-header {
+      margin-bottom: 1rem;
+      padding-bottom: 0.2rem;
+    }
+  
+    .attractive-search {
+      max-width: 100%;
+      padding: 0.1rem 0.5rem;
+    }
+  
+    .search-input {
+      font-size: 1rem;
+      padding: 0.7rem 1rem 0.7rem 2.2rem;
+    }
+  
+    .search-icon {
+      left: 0.7rem;
+      font-size: 1rem;
+    }
+  
+    .modal-content {
+      width: 95%;
+      padding: 1.5rem;
+    }
+  
+    .modal-actions {
+      flex-direction: column;
+    }
+  
+    .modal-actions .action-btn {
+      width: 100%;
+      margin-right: 0;
+    }
+  }
+  
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .pagination-btn {
+    background: #f5f7fa;
+    color: #2c3e50;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+  }
+  
+  .pagination-btn.active,
+  .pagination-btn:hover:not(:disabled) {
+    background: #3498db;
+    color: #fff;
+    border-color: #3498db;
+  }
+  
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .appointments-table th:nth-child(4),
+  .appointments-table th:nth-child(5),
+  .appointments-table td:nth-child(4),
+  .appointments-table td:nth-child(5) {
+    text-align: center;
+  }
+  
+  .appointments-table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  
+  .sort-icon {
+    margin-left: 4px;
+    font-size: 1em;
+    color: #b0b8c1;
+    vertical-align: middle;
+    transition: color 0.2s;
+  }
+  
+  .sort-icon.active {
+    color: #3498db;
+  }
+  
+  .appointments-table th:last-child {
+    text-align: center;
+  }
+  
+  /* Center-align the phone number column in the users table */
+  .appointments-table th:nth-child(2),
+  .appointments-table td:nth-child(2) {
+    text-align: center;
+  }
+  
+  /* Center-align the email column in the users table */
+  .appointments-table th:nth-child(3),
+  .appointments-table td:nth-child(3) {
+    text-align: center;
+  }
+  
