@@ -75,7 +75,6 @@ export default function Appointment() {
   };
 
   const handleComplete = async (appt) => {
-<<<<<<< HEAD
     if (window.confirm('Are you sure you want to mark this appointment as complete? This action cannot be undone.')) {
       const token = localStorage.getItem('admin-token');
       try {
@@ -94,19 +93,6 @@ export default function Appointment() {
       } catch (err) {
         alert(err.response?.data?.message || "Failed to complete appointment");
       }
-=======
-    const token = localStorage.getItem('admin-token'); // or your admin token key
-    try {
-      const res = await axios.post(
-        `http://localhost:5000/api/book/admin/complete/${appt._id}`,
-        {},
-        { headers: { 'auth-token': token } }
-      );
-      alert(res.data.message);
-      fetchAppointments(); // Refresh list
-    } catch (err) {
-      alert(err.response?.data?.message || "Failed to complete appointment");
->>>>>>> f1ab8668404ee97b8e2d5b4902410efdc11af391
     }
   };
 
@@ -128,15 +114,12 @@ export default function Appointment() {
 
   // Sort filteredAppointments by sortBy and sortDirection
   const sortedAppointments = [...filteredAppointments].sort((a, b) => {
-<<<<<<< HEAD
     // First sort by completion status
     if (a.completed !== b.completed) {
       return a.completed ? 1 : -1; // Incomplete appointments come first
     }
 
     // Then apply the regular sorting logic
-=======
->>>>>>> f1ab8668404ee97b8e2d5b4902410efdc11af391
     if (sortBy === 'date') {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
