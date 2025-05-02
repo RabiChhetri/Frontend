@@ -84,7 +84,7 @@ export default function Log() {
       setMessage("An error occurred while logging in");
       alert("An error occurred while logging in");
     }
-};
+  };
 
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });

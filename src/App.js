@@ -33,6 +33,7 @@ import Appointment from './components/Admin/Appointment';
 // Wrapper component to handle conditional navbar rendering
 const AppContent = () => {
   const location = useLocation();
+  // Hide Navbar and Footer for all /admin/* routes except /adminlog
   const isAdminRoute = location.pathname.startsWith('/admin/') && location.pathname !== '/adminlog';
 
   return (
@@ -56,9 +57,7 @@ const AppContent = () => {
         <Route path="/admin/Analytics" element={<Analytics />} />
         <Route path="/admin/Settings" element={<Settings />} />
         <Route path="/admin/Rewards" element={<Rewards />} />
-         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
-      <Route path="*" element={<Navigate to="/" replace/>} />
+        <Route path="*" element={<Navigate to="/" replace/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
       <ToastContainer position="top-right" autoClose={3000} />
@@ -73,6 +72,5 @@ function App() {
     </Router>
   );
 }
-
 
 export default App;
