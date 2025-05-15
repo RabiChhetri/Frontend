@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Book.css';
+// Import the QR payment image
+import QRPayment from './OR Payment.jpeg';
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -19,6 +21,12 @@ export default function Booking() {
   const [showHolidayAlert, setShowHolidayAlert] = useState(false);
   const [holidayAlertMessage, setHolidayAlertMessage] = useState('');
   const [availableSeats, setAvailableSeats] = useState(2);
+  // Add state for QR payment popup
+  const [showQRPayment, setShowQRPayment] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [paymentFile, setPaymentFile] = useState(null);
+  const [bookingId, setBookingId] = useState(null);
+  const [showPaymentChoice, setShowPaymentChoice] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -84,6 +92,10 @@ export default function Booking() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    setPaymentFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -138,7 +150,13 @@ export default function Booking() {
       });
       const data = await response.json();
       if (response.ok) {
-        setMessage('Booking successful!');
+        // Store booking ID for payment update
+        setBookingId(data.appointment._id);
+        // Find the selected service details
+        const service = services.find(s => s._id === formData.service);
+        setSelectedService(service);
+        // Show payment choice instead of QR payment popup
+        setShowPaymentChoice(true);
         setFormData({
           fullName: '',
           phoneNumber: '',
@@ -152,6 +170,83 @@ export default function Booking() {
       }
     } catch (err) {
       console.error('Booking error:', err);
+      setMessage('Network error: Please check your connection');
+    }
+  };
+
+  // Helper function to compress and convert file to base64
+  const compressAndConvertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Adjust quality here (0.7 = 70% quality)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(dataUrl);
+        };
+        img.onerror = (error) => reject(error);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  
+  const handlePaymentConfirm = async () => {
+    if (!paymentFile) {
+      setMessage('Please upload a payment screenshot');
+      return;
+    }
+    
+    try {
+      // Compress and convert file to base64
+      const base64 = await compressAndConvertToBase64(paymentFile);
+      
+      // Send payment screenshot to server
+      const response = await fetch(`http://localhost:5000/api/book/payment/${bookingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token': localStorage.getItem('token')
+        },
+        body: JSON.stringify({
+          paymentScreenshot: base64
+        }),
+      });
+      
+      if (response.ok) {
+        setMessage('Booking successful! Payment received.');
+        setShowQRPayment(false);
+      } else {
+        const data = await response.json();
+        setMessage(data.message || 'Error uploading payment screenshot');
+      }
+    } catch (err) {
+      console.error('Payment upload error:', err);
       setMessage('Network error: Please check your connection');
     }
   };
@@ -183,6 +278,102 @@ export default function Booking() {
             <h3>Holiday Notice</h3>
             <p style={{ whiteSpace: 'pre-line' }}>{holidayAlertMessage}</p>
             <button onClick={() => setShowHolidayAlert(false)}>OK</button>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Choice Modal */}
+      {showPaymentChoice && (
+        <div className="alert-overlay">
+          <div className="alert-popup payment-choice-modal">
+            <h3 className="payment-choice-title">Choose Payment Option</h3>
+            <p className="payment-choice-desc">Would you like to pay now or pay later?</p>
+            <div className="payment-choice-btn-group">
+              <button
+                className="pay-now-btn"
+                onClick={() => {
+                  setShowPaymentChoice(false);
+                  setShowQRPayment(true);
+                }}
+              >
+                Pay Now
+              </button>
+              <button
+                className="pay-later-btn"
+                onClick={() => {
+                  setShowPaymentChoice(false);
+                  setMessage('Booking successful! Please pay at the shop.');
+                }}
+              >
+                Pay Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Payment Popup */}
+      {showQRPayment && (
+        <div className="alert-overlay">
+          <div className="alert-popup payment">
+            <div className="alert-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 8h-3v-3h3v3zm0 11h-3v-3h3v3zm11-11h-3v-3h3v3zm0 11h-3v-3h3v3zm-11 0h-3v-3h3v3zm11-11h-3v-3h3v3z" />
+              </svg>
+            </div>
+            <h3>Scan & Pay Securely With Khalti</h3>
+            <div className="payment-details">
+              <p><strong>Service:</strong> {selectedService?.name}</p>
+              <p><strong>Price:</strong> Rs. {selectedService?.price}.00</p>
+              <p><strong>Duration:</strong> {selectedService?.duration}</p>
+            </div>
+            <div className="qr-code-container">
+              <img src={QRPayment} alt="Payment QR Code" className="qr-code-image" />
+            </div>
+            <p className="payment-instructions">
+              Please take a screenshot after making the payment amount and
+              upload the payment screenshot
+            </p>
+            <div className="payment-actions">
+              <input 
+                type="file" 
+                id="payment-screenshot" 
+                className="payment-file-input" 
+                onChange={handleFileChange}
+                accept="image/*"
+              />
+              <div className="payment-buttons">
+                <button
+                  className="cancel-btn"
+                  onClick={async () => {
+                    if (bookingId) {
+                      try {
+                        const token = localStorage.getItem('token');
+                        const response = await fetch(`http://localhost:5000/api/book/${bookingId}`, {
+                          method: 'DELETE',
+                          headers: {
+                            'auth-token': token
+                          }
+                        });
+                        if (response.ok) {
+                          setMessage('Booking cancelled. Please start again if you wish to book.');
+                        } else {
+                          setMessage('Failed to cancel booking. Please try again.');
+                        }
+                      } catch (err) {
+                        setMessage('Network error: Could not cancel booking.');
+                      }
+                    }
+                    setShowQRPayment(false);
+                    setBookingId(null);
+                    setSelectedService(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button className="confirm-btn" onClick={handlePaymentConfirm}>Confirm Payment</button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -316,7 +507,7 @@ export default function Booking() {
         <small className="date-helper-text">There are {availableSeats} seats/barbers available for booking.</small>
         <br />
 
-        <button type="submit">Send</button>
+        <button type="submit">Book Appointment</button>
       </form>
 
       {message && (

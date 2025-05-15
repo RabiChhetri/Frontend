@@ -413,3 +413,205 @@
 .appointments-table th:last-child {
   text-align: center;
 }
+/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}
+.modal-content img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Attractive Close Button for Modal */
+.modal-close-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  margin-right: 0;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  outline: none;
+}
+.modal-close-btn:hover, .modal-close-btn:focus {
+  background: #c0392b;
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Add to your Appointment.css file */
+.appointments-table td {
+  padding: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.action-btn {
+  margin-right: 5px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* For smaller screens, make the table horizontally scrollable */
+.appointments-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ensure the Actions column has enough width */
+.appointments-table th:last-child,
+.appointments-table td:last-child {
+  min-width: 240px;
+}

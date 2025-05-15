@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../../CSS/Appointment.css';
 import Sidebar from '../Sidebar';
 import axios from 'axios';
-import { FaTrash, FaCalendarAlt, FaClock, FaUser, FaSpinner, FaCheckCircle, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaTrash, FaCalendarAlt, FaClock, FaUser, FaSpinner, FaCheckCircle, FaSortUp, FaSortDown, FaEye } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function formatDate(dateString) {
@@ -42,6 +42,10 @@ export default function Appointment() {
   const [sortBy, setSortBy] = useState('date');
   const [sortDirection, setSortDirection] = useState('asc');
   const [services, setServices] = useState([]);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState('');
 
   useEffect(() => {
     fetchAppointments();
@@ -171,6 +175,22 @@ export default function Appointment() {
     return service ? service.name : id;
   };
 
+  // Fetch full booking details for payment modal
+  const handleViewPayment = async (id) => {
+    setModalLoading(true);
+    setModalError('');
+    setShowPaymentModal(true);
+    try {
+      const res = await axios.get(`http://localhost:5000/api/book/admin/${id}`);
+      setSelectedBooking(res.data);
+    } catch (err) {
+      setModalError('Failed to fetch payment details.');
+      setSelectedBooking(null);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
   return (
     <div className="admin-dashboard-root">
       <Sidebar />
@@ -290,6 +310,14 @@ export default function Appointment() {
                           >
                             <FaCheckCircle /> {appt.completed ? 'Completed' : 'Complete'}
                           </motion.button>
+                          <motion.button
+                            className="action-btn view-btn"
+                            onClick={() => handleViewPayment(appt._id)}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <FaEye /> View
+                          </motion.button>
                         </td>
                       </motion.tr>
                     ))}
@@ -298,6 +326,43 @@ export default function Appointment() {
               </motion.table>
             )}
           </div>
+          {/* Payment Screenshot Modal */}
+          {showPaymentModal && (
+            <div className="modal-backdrop" onClick={() => setShowPaymentModal(false)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <h3>Payment Details</h3>
+                {modalLoading ? (
+                  <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    <FaSpinner className="spinner" /> Loading...
+                  </div>
+                ) : modalError ? (
+                  <div style={{ color: 'red' }}>{modalError}</div>
+                ) : selectedBooking ? (
+                  <>
+                    <p><strong>Customer:</strong> {capitalizeWords(selectedBooking.fullName)}</p>
+                    <p><strong>Service:</strong> {selectedBooking.service?.name || getServiceName(selectedBooking.service)}</p>
+                    <p><strong>Date:</strong> {formatDate(selectedBooking.date)}</p>
+                    <p><strong>Time:</strong> {selectedBooking.time}</p>
+                    <p><strong>Seat:</strong> {selectedBooking.seatNumber}</p>
+                    <p><strong>Payment Status:</strong> <span style={{ color: selectedBooking.paymentStatus === 'completed' ? 'green' : 'orange' }}>{selectedBooking.paymentStatus}</span></p>
+                    {selectedBooking.paymentScreenshot ? (
+                      <div style={{ margin: '1rem 0' }}>
+                        <strong>Payment Screenshot:</strong>
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <img src={selectedBooking.paymentScreenshot.startsWith('data:') ? selectedBooking.paymentScreenshot : `http://localhost:5000/${selectedBooking.paymentScreenshot}`} alt="Payment Screenshot" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px', border: '1px solid #eee' }} />
+                        </div>
+                      </div>
+                    ) : (
+                      <p style={{ color: 'gray' }}>No payment screenshot uploaded.</p>
+                    )}
+                  </>
+                ) : null}
+                <div className="modal-actions" style={{ textAlign: 'right', marginTop: '1.5rem' }}>
+                  <button className="modal-close-btn" onClick={() => setShowPaymentModal(false)}>Close</button>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <motion.div 

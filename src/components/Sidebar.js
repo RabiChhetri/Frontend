@@ -1,6 +1,6 @@
 import React from 'react';
 import './Sidebar.css';
-import { FaCalendarAlt, FaUsers, FaCut, FaChartBar, FaCog, FaSignOutAlt, FaCrown } from 'react-icons/fa';
+import { FaCalendarAlt, FaUsers, FaCut, FaChartBar, FaCog, FaSignOutAlt, FaCrown,FaEnvelope } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Sidebar() {
@@ -64,6 +64,15 @@ export default function Sidebar() {
                 <FaCrown className="nav-icon" /> Rewards
               </button>
             </li>
+            <li>
+              <button
+                className={`sidebar-nav-btn${location.pathname === '/admin/Admincontact' ? ' active' : ''}`}
+                onClick={() => navigate('/admin/Admincontact')}
+              >
+                <FaEnvelope className="nav-icon" /> Contact
+              </button>
+            </li>
+            
             <li>
               <button
                 className={`sidebar-nav-btn${location.pathname === '/admin/Settings' ? ' active' : ''}`}

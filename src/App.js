@@ -21,6 +21,8 @@ import Settings from './components/Admin/Settings';
 import Rewards from './components/Admin/Rewards';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import AdminAuthWrapper from './components/AdminAuthWrapper';
+import Admincontact from './components/Admin/Admincontact';
 import {
   BrowserRouter as Router,
   Routes,
@@ -36,6 +38,11 @@ const AppContent = () => {
   // Hide Navbar and Footer for all /admin/* routes except /adminlog
   const isAdminRoute = location.pathname.startsWith('/admin/') && location.pathname !== '/adminlog';
 
+  // Wrap admin routes with AdminAuthWrapper
+  const AdminRoute = ({ children }) => {
+    return <AdminAuthWrapper>{children}</AdminAuthWrapper>;
+  };
+
   return (
     <>
       {!isAdminRoute && <Navbar />}
@@ -49,14 +56,15 @@ const AppContent = () => {
         <Route path="/log" element={<Log />} />
         <Route path="/register" element={<Register />} />
         <Route path="/adminlog" element={<Adminlog />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/admin/appointment" element={<Appointment />} />
-        <Route path="/admin/Users" element={<Users />} />
-        <Route path="/admin/Services" element={<Services />} />
-        <Route path="/admin/Analytics" element={<Analytics />} />
-        <Route path="/admin/Settings" element={<Settings />} />
-        <Route path="/admin/Rewards" element={<Rewards />} />
+        <Route path="/admin/appointment" element={<AdminRoute><Appointment /></AdminRoute>} />
+        <Route path="/admin/Users" element={<AdminRoute><Users /></AdminRoute>} />
+        <Route path="/admin/Services" element={<AdminRoute><Services /></AdminRoute>} />
+        <Route path="/admin/Analytics" element={<AdminRoute><Analytics /></AdminRoute>} />
+        <Route path="/admin/Settings" element={<AdminRoute><Settings /></AdminRoute>} />
+        <Route path="/admin/Rewards" element={<AdminRoute><Rewards /></AdminRoute>} />
+        <Route path="/admin/Admincontact" element={<AdminRoute><Admincontact /></AdminRoute>} />
         <Route path="*" element={<Navigate to="/" replace/>} />
       </Routes>
       {!isAdminRoute && <Footer />}
