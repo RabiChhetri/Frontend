@@ -1,6 +1,118 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Book.css';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+// Payment Form Component
+const PaymentForm = ({ amount, bookingId, onSuccess, onCancel }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    if (!stripe || !elements) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Get client secret
+      const response = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token': localStorage.getItem('token')
+        },
+        body: JSON.stringify({ bookingId, amount })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Payment intent error response:', errorText);
+        throw new Error('Failed to create payment');
+      }
+
+      const data = await response.json();
+
+      // Confirm payment
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: 'Customer Name', // You could pass the customer name here
+          },
+        },
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      if (result.paymentIntent.status === 'succeeded') {
+        // Record payment success in backend
+        await fetch('http://localhost:5000/api/payment/payment-success', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token': localStorage.getItem('token')
+          },
+          body: JSON.stringify({
+            bookingId,
+            paymentIntentId: result.paymentIntent.id
+          })
+        });
+
+        onSuccess();
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="payment-form">
+      <h3>Payment Details</h3>
+      <p>Amount: Rs.{amount}</p>
+      
+      <div className="card-element-container">
+        <CardElement options={{
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#424770',
+              '::placeholder': {
+                color: '#aab7c4',
+              },
+            },
+            invalid: {
+              color: '#9e2146',
+            },
+          },
+        }} />
+      </div>
+      
+      {error && <div className="payment-error">{error}</div>}
+      
+      <div className="payment-buttons">
+        <button type="button" onClick={onCancel} disabled={loading}>Cancel</button>
+        <button type="submit" disabled={!stripe || loading}>
+          {loading ? 'Processing...' : 'Pay Now'}
+        </button>
+      </div>
+    </form>
+  );
+};
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -19,6 +131,11 @@ export default function Booking() {
   const [showHolidayAlert, setShowHolidayAlert] = useState(false);
   const [holidayAlertMessage, setHolidayAlertMessage] = useState('');
   const [availableSeats, setAvailableSeats] = useState(2);
+  
+  // Add these new states for payment
+  const [showPayment, setShowPayment] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -138,15 +255,11 @@ export default function Booking() {
       });
       const data = await response.json();
       if (response.ok) {
-        setMessage('Booking successful!');
-        setFormData({
-          fullName: '',
-          phoneNumber: '',
-          date: '',
-          time: '',
-          service: 'default',
-          seatNumber: '1',
-        });
+        // Instead of showing success message, show payment form
+        const selectedService = services.find(s => s._id === formData.service);
+        setPaymentAmount(selectedService ? selectedService.price : 0);
+        setBookingId(data.appointment._id);
+        setShowPayment(true);
       } else {
         setMessage(data.message);
       }
@@ -156,8 +269,27 @@ export default function Booking() {
     }
   };
 
+  const handlePaymentSuccess = () => {
+    setShowPayment(false);
+    setMessage('Booking and payment successful!');
+    setFormData({
+      fullName: '',
+      phoneNumber: '',
+      date: '',
+      time: '',
+      service: 'default',
+      seatNumber: '1',
+    });
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+    setMessage('Booking created but payment was cancelled. Please complete payment later.');
+  };
+
   return (
     <div className='booking-container'>
+      {/* Keep all existing alert components */}
       {showAuthAlert && (
         <div className="alert-overlay">
           <div className="alert-popup error">
@@ -187,6 +319,22 @@ export default function Booking() {
         </div>
       )}
 
+      {/* Add payment overlay */}
+      {showPayment && (
+        <div className="alert-overlay">
+          <div className="alert-popup payment">
+            <Elements stripe={stripePromise}>
+              <PaymentForm 
+                amount={paymentAmount} 
+                bookingId={bookingId} 
+                onSuccess={handlePaymentSuccess} 
+                onCancel={handlePaymentCancel} 
+              />
+            </Elements>
+          </div>
+        </div>
+      )}
+
       <div className="service-time-section animate-fadeInLeft">
         <h3>Service Time</h3>
         <ul className="service-time-list">
@@ -209,6 +357,8 @@ export default function Booking() {
           })}
         </ul>
       </div>
+
+      {/* Keep the existing form */}
       <form onSubmit={handleSubmit} className="booking-form animate-fadeInRight">
         <label htmlFor="fullName">Full Name:</label>
         <input
@@ -316,7 +466,7 @@ export default function Booking() {
         <small className="date-helper-text">There are {availableSeats} seats/barbers available for booking.</small>
         <br />
 
-        <button type="submit">Send</button>
+        <button type="submit">Book Appointment</button>
       </form>
 
       {message && (

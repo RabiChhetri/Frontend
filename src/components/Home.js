@@ -259,28 +259,28 @@ export default function Home() {
                     <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faScissors} />
                         <h3>Haircut Styles</h3>
-                        <p>Barber is a person whose occupation is mainly to cut dress style.</p>
+                        <p>Trendy, precision haircuts tailored to your style—look sharp, feel confident today!</p>
                     </div>
                 </div>
                 <div className="col-lg-3 col-md-6 sm-padding">
                     <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faRulerHorizontal} />
                         <h3>Beard Triming</h3>
-                        <p>Barber is a person whose occupation is mainly to cut dress style.</p>
+                        <p>Expert beard trimming for a sharp, clean look that defines your best features.</p>
                     </div>
                 </div>
                 <div className="col-lg-3 col-md-6 sm-padding">
                     <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faShower} />
                         <h3>Hair Wash</h3>
-                        <p>Barber is a person whose occupation is mainly to cut dress style.</p>
+                        <p>Refreshing hair wash that revitalizes your scalp and leaves your hair silky smooth.</p>
                     </div>
                 </div>
                 <div className="col-lg-3 col-md-6 sm-padding">
                     <div className="service_box animate-zoomIn">
                         <FontAwesomeIcon className="icon" icon={faBrush} />
                         <h3>Hair Coloring</h3>
-                        <p>Barber is a person whose occupation is mainly to cut dress style.</p>
+                        <p>Vibrant, professional hair coloring that enhances your style and boosts your confidence.</p>
                     </div>
                 </div>
             </div>

@@ -64,7 +64,7 @@ export default function footer() {
           </div>
         </footer>
       </div>
-
+{/* 
       <div className="footer-links">
         <button 
           className="footer-link"
@@ -90,7 +90,7 @@ export default function footer() {
         >
           Contact
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

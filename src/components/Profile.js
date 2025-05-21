@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Profile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCrown, faCalendar, faClock, faScissors } from '@fortawesome/free-solid-svg-icons';
+import { faCrown, faCalendar, faClock, faScissors, faTimes, faBell } from '@fortawesome/free-solid-svg-icons';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -13,6 +13,55 @@ export default function Profile() {
   });
   const [loading, setLoading] = useState(true);
   const [services, setServices] = useState([]);
+  const [reminderVisible, setReminderVisible] = useState(false);
+  const [reminderData, setReminderData] = useState(null);
+
+  // Function to check if a reminder should be shown
+  const checkForUpcomingAppointment = () => {
+    const now = new Date();
+    const thirtyMinutesFromNow = new Date(now.getTime() + 30 * 60 * 1000);
+    
+    // Find appointments that are coming up in the next 30 minutes
+    const upcomingAppointments = userProfile.recentAppointments.filter(apt => {
+      // Parse the time string (e.g., "1:30 PM")
+      const [timePart, meridian] = apt.time.split(' ');
+      const [hours, minutes] = timePart.split(':').map(Number);
+      
+      // Convert to 24-hour format
+      let hour24 = hours;
+      if (meridian.toUpperCase() === 'PM' && hours !== 12) hour24 += 12;
+      if (meridian.toUpperCase() === 'AM' && hours === 12) hour24 = 0;
+      
+      // Create a date object for the appointment time
+      const appointmentDate = new Date(apt.date);
+      appointmentDate.setHours(hour24, minutes, 0, 0);
+      
+      // Check if the appointment is within the next 30 minutes
+      return appointmentDate > now && appointmentDate <= thirtyMinutesFromNow;
+    });
+    
+    if (upcomingAppointments.length > 0) {
+      // Check if this reminder has been dismissed
+      const dismissedReminders = JSON.parse(localStorage.getItem('dismissedReminders') || '{}');
+      const appointmentId = upcomingAppointments[0].id;
+      
+      if (!dismissedReminders[appointmentId]) {
+        setReminderData(upcomingAppointments[0]);
+        setReminderVisible(true);
+      }
+    }
+  };
+
+  // Function to dismiss a reminder
+  const dismissReminder = () => {
+    if (reminderData) {
+      // Store the dismissed reminder ID in localStorage
+      const dismissedReminders = JSON.parse(localStorage.getItem('dismissedReminders') || '{}');
+      dismissedReminders[reminderData.id] = true;
+      localStorage.setItem('dismissedReminders', JSON.stringify(dismissedReminders));
+    }
+    setReminderVisible(false);
+  };
 
   useEffect(() => {
     // Check if user is authenticated
@@ -101,6 +150,18 @@ export default function Profile() {
     }
   }, [navigate, services]);
 
+  // Check for upcoming appointments when user profile is updated
+  useEffect(() => {
+    if (!loading && userProfile.recentAppointments.length > 0) {
+      checkForUpcomingAppointment();
+      
+      // Set up an interval to check for upcoming appointments every minute
+      const intervalId = setInterval(checkForUpcomingAppointment, 60000);
+      
+      return () => clearInterval(intervalId);
+    }
+  }, [loading, userProfile]);
+
   if (loading) {
     return (
       <div className="profile-loading">
@@ -111,6 +172,22 @@ export default function Profile() {
 
   return (
     <div className="profile-container">
+      {/* Appointment Reminder Notification */}
+      {reminderVisible && reminderData && (
+        <div className="reminder-notification">
+          <div className="reminder-icon">
+            <FontAwesomeIcon icon={faBell} />
+          </div>
+          <div className="reminder-content">
+            <h3>Appointment Reminder</h3>
+            <p>You have an upcoming appointment for {reminderData.service} at {reminderData.time}.</p>
+          </div>
+          <button className="reminder-close" onClick={dismissReminder}>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+      )}
+
       {/* Welcome Section */}
       <div className="welcome-section">
         <h1>Welcome, {userProfile.name}</h1>

@@ -4,25 +4,61 @@ const services = [
   {
     category: 'Hair Styling',
     items: [
-      { name: 'Hair Cut', price: 'Rs200' },
-      { name: 'Hair Styling', price: 'Rs250' },
-      { name: 'Hair Coloring', price: 'Rs500' },
+      { 
+        name: 'Hair Cut', 
+        price: 'Rs200',
+        description: 'Sharp, stylish haircuts tailored to your look by expert professionals today.'
+      },
+      { 
+        name: 'Hair Styling', 
+        price: 'Rs250',
+        description: 'Trendy, personalized hair styling that enhances confidence and showcases your personality.'
+      },
+      { 
+        name: 'Hair Coloring', 
+        price: 'Rs500',
+        description: 'Vibrant hair coloring with rich tones to match your style and attitude.'
+      },
     ],
   },
   {
     category: 'Shaving',
     items: [
-      { name: 'Clean Shaving', price: 'Rs150' },
-      { name: 'Beard Triming', price: 'Rs100' },
-      { name: 'Smooth Shave', price: 'Rs200' },
+      { 
+        name: 'Clean Shaving', 
+        price: 'Rs150',
+        description: 'Experience a smooth, clean shave with precision, comfort, and expert care.'
+      },
+      { 
+        name: 'Beard Triming', 
+        price: 'Rs100',
+        description: 'Perfectly sculpted beard trims for a clean, sharp, and confident appearance.'
+      },
+      { 
+        name: 'Smooth Shave', 
+        price: 'Rs200',
+        description: 'Luxuriously smooth shave using premium products for a fresh, refined finish.'
+      },
     ],
   },
   {
     category: 'Face Masking',
     items: [
-      { name: 'White Facial', price: 'Rs300' },
-      { name: 'Face Cleaning', price: 'Rs250' },
-      { name: 'Bright Tuning', price: 'Rs350' },
+      { 
+        name: 'White Facial', 
+        price: 'Rs300',
+        description: 'Revitalize your skin with our glow-boosting, deep-cleansing white facial treatment.'
+      },
+      { 
+        name: 'Face Cleaning', 
+        price: 'Rs250',
+        description: 'Deep face cleaning that clears pores, refreshes skin, and restores your glow.'
+      },
+      { 
+        name: 'Bright Tuning', 
+        price: 'Rs350',
+        description: 'Bright tuning facial to even skin tone, boost radiance, and refresh instantly.'
+      },
     ],
   },
 ];
@@ -71,7 +107,7 @@ function About() {
                   <span className="service-price">{item.price}</span>
                 </div>
                 <p className="service-description">
-                  Barber is a person whose occupation is mainly to cut dress groom style and shave men.
+                {item.description}
                 </p>
               </div>
             ))}

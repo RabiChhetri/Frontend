@@ -66,6 +66,15 @@ export default function Sidebar() {
             </li>
             <li>
               <button
+                className={`sidebar-nav-btn${location.pathname === '/admin/Admincontact' ? ' active' : ''}`}
+                onClick={() => navigate('/admin/Admincontact')}
+              >
+                <FaCrown className="nav-icon" /> contact
+              </button>
+            </li>
+            
+            <li>
+              <button
                 className={`sidebar-nav-btn${location.pathname === '/admin/Settings' ? ' active' : ''}`}
                 onClick={() => navigate('/admin/Settings')}
               >

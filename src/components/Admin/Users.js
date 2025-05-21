@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../Sidebar';
 import '../../CSS/User.css';
-import { FaSortUp, FaSortDown, FaTrash } from 'react-icons/fa';
+import { FaSortUp, FaSortDown, FaTrash, FaEdit } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Users() {
@@ -12,6 +12,14 @@ export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 6;
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    rewardPoints: 0
+  });
 
   useEffect(() => {
     async function fetchUsers() {
@@ -69,6 +77,61 @@ export default function Users() {
       setUsers(users.filter(user => user._id !== id));
     } catch (err) {
       alert('Error deleting user: ' + err.message);
+    }
+  };
+
+  // Open edit modal and set current user
+  const handleEditClick = (user) => {
+    setCurrentUser(user);
+    setEditFormData({
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      rewardPoints: user.rewardPoints || 0
+    });
+    setEditModalOpen(true);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: name === 'rewardPoints' ? parseInt(value, 10) : value
+    });
+  };
+
+  // Submit edit form
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/auth/users/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editFormData)
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update user');
+      }
+
+      const { user: updatedUser } = await res.json();
+      
+      // Update users state with the updated user
+      setUsers(users.map(user => 
+        user._id === currentUser._id ? updatedUser : user
+      ));
+      
+      // Close modal
+      setEditModalOpen(false);
+      setCurrentUser(null);
+    } catch (err) {
+      alert('Error updating user: ' + err.message);
     }
   };
 
@@ -157,6 +220,7 @@ export default function Users() {
                     </th>
                     <th>Phone Number</th>
                     <th>Email</th>
+                    <th>Reward Points</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -168,7 +232,7 @@ export default function Users() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <td colSpan="4" style={{ textAlign: 'center' }}>No users found.</td>
+                        <td colSpan="5" style={{ textAlign: 'center' }}>No users found.</td>
                       </motion.tr>
                     ) : (
                       currentUsers.map((user, index) => (
@@ -182,7 +246,17 @@ export default function Users() {
                           <td>{user.name}</td>
                           <td>{user.phoneNumber}</td>
                           <td>{user.email}</td>
+                          <td>{user.rewardPoints || 0}</td>
                           <td>
+                            <motion.button 
+                              className="action-btn edit-btn" 
+                              onClick={() => handleEditClick(user)}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              style={{ marginRight: '8px' }}
+                            >
+                              <FaEdit /> Edit
+                            </motion.button>
                             <motion.button 
                               className="action-btn delete-btn" 
                               onClick={() => handleDelete(user._id)}
@@ -240,6 +314,88 @@ export default function Users() {
           )}
         </motion.div>
       </div>
+
+      {/* Edit User Modal */}
+      {editModalOpen && (
+        <div className="modal-backdrop">
+          <motion.div 
+            className="modal-content"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+          >
+            <h3>Edit User</h3>
+            <form onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phoneNumber">Phone Number</label>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={editFormData.phoneNumber}
+                  onChange={handleInputChange}
+                  required
+                  pattern="[0-9]{10}"
+                  title="Phone number must be 10 digits"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="rewardPoints">Reward Points</label>
+                <input
+                  type="number"
+                  id="rewardPoints"
+                  name="rewardPoints"
+                  value={editFormData.rewardPoints}
+                  onChange={handleInputChange}
+                  min="0"
+                  max="500"
+                />
+              </div>
+              <div className="modal-actions">
+                <motion.button
+                  type="button"
+                  className="action-btn delete-btn"
+                  onClick={() => setEditModalOpen(false)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  type="submit"
+                  className="action-btn edit-btn"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Save Changes
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
