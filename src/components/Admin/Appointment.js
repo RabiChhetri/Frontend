@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../../CSS/Appointment.css';
 import Sidebar from '../Sidebar';
 import axios from 'axios';
-import { FaTrash, FaCalendarAlt, FaClock, FaUser, FaSpinner, FaCheckCircle, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaTrash, FaCalendarAlt, FaClock, FaUser, FaSpinner, FaCheckCircle, FaSortUp, FaSortDown, FaEye } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function formatDate(dateString) {
@@ -42,6 +42,10 @@ export default function Appointment() {
   const [sortBy, setSortBy] = useState('date');
   const [sortDirection, setSortDirection] = useState('asc');
   const [services, setServices] = useState([]);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
 
   useEffect(() => {
     fetchAppointments();
@@ -171,6 +175,21 @@ export default function Appointment() {
     return service ? service.name : id;
   };
 
+  const handleViewPayment = async (apptId) => {
+    setShowPaymentModal(true);
+    setPaymentLoading(true);
+    setPaymentError('');
+    setPaymentDetails(null);
+    try {
+      const res = await axios.get(`http://localhost:5000/api/book/${apptId}`);
+      setPaymentDetails(res.data);
+    } catch (err) {
+      setPaymentError('Failed to fetch payment details');
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
   return (
     <div className="admin-dashboard-root">
       <Sidebar />
@@ -290,6 +309,14 @@ export default function Appointment() {
                           >
                             <FaCheckCircle /> {appt.completed ? 'Completed' : 'Complete'}
                           </motion.button>
+                          <motion.button
+                            className="action-btn view-btn"
+                            onClick={() => handleViewPayment(appt._id)}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <FaEye /> View
+                          </motion.button>
                         </td>
                       </motion.tr>
                     ))}
@@ -336,6 +363,27 @@ export default function Appointment() {
                 Next
               </motion.button>
             </motion.div>
+          )}
+          {/* Payment Details Modal */}
+          {showPaymentModal && (
+            <div className="modal-overlay" onClick={() => setShowPaymentModal(false)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <h2>Payment Details</h2>
+                {paymentLoading ? (
+                  <div style={{ textAlign: 'center', padding: '20px' }}><FaSpinner className="spinner" /> Loading...</div>
+                ) : paymentError ? (
+                  <div style={{ color: 'red' }}>{paymentError}</div>
+                ) : paymentDetails ? (
+                  <div>
+                    <p><strong>Customer:</strong> {capitalizeWords(paymentDetails.fullName)}</p>
+                    <p><strong>Payment Status:</strong> {paymentDetails.paymentStatus || 'N/A'}</p>
+                    <p><strong>Amount:</strong> {paymentDetails.paymentAmount ? `Rs.${paymentDetails.paymentAmount}` : 'N/A'}</p>
+                    <p><strong>Payment Date:</strong> {paymentDetails.paymentDate ? formatDate(paymentDetails.paymentDate) + ' ' + formatTime(paymentDetails.paymentDate) : 'N/A'}</p>
+                  </div>
+                ) : null}
+                <button className="action-btn complete-btn" onClick={() => setShowPaymentModal(false)} style={{ marginTop: 20 }}>Close</button>
+              </div>
+            </div>
           )}
         </motion.div>
       </div>
