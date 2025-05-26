@@ -22,12 +22,12 @@ export default function Register() {
       setError('All fields are required');
       return false;
     }
-    if (phoneNumber.length !== 10) {
-      setError('Phone number must be 10 digits');
+    if (!phoneNumber.match(/^(98|97)\d{8}$/)) {
+      setError('Phone number must start with 98 or 97 and be 10 digits long');
       return false;
     }
-    if (password.length < 5) {
-      setError('Password must be at least 5 characters');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
       return false;
     }
     return true;
@@ -162,13 +162,26 @@ export default function Register() {
                 <input
                   type="tel"
                   name="phoneNumber"
-                  placeholder="Enter your 10-digit phone number"
+                  placeholder="Enter your 10-digit phone number (98/97)"
                   value={phoneNumber}
-                  onChange={handleChange}
-                  pattern="[0-9]{10}"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Only allow valid phone numbers starting with 98 or 97
+                    if (value === '' || 
+                        (value.length === 1 && value === '9') || 
+                        (value.length === 2 && (value.startsWith('98') || value.startsWith('97'))) ||
+                        (value.length > 2 && value.length <= 10 && (value.startsWith('98') || value.startsWith('97')))) {
+                      handleChange(e);
+                    }
+                  }}
+                  pattern="^(98|97)\d{8}$"
+                  title="Phone number must start with 98 or 97 and be 10 digits long"
                   maxLength="10"
                   required
                 />
+                <small className="helper-text" style={{ color: '#666', fontSize: '0.85rem', marginTop: '4px' }}>
+                  Phone number must start with 98 or 97 (e.g., 9812345678)
+                </small>
               </div>
               <div className="register-input-group">
                 <label>Email</label>

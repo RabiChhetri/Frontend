@@ -7,11 +7,192 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 // Payment Form Component
-const PaymentForm = ({ amount, bookingId, onSuccess, onCancel }) => {
+const PaymentForm = ({ amount, formData, onSuccess, onCancel }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState('full');
+
+  // Add dynamic styles based on selectedPaymentOption
+  useEffect(() => {
+    const styles = `
+      .payment-options {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .payment-option {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: white;
+      }
+
+      .payment-option.selected {
+        border-color: #8e44ad;
+        background-color: #f8f4fc;
+        box-shadow: 0 2px 4px rgba(142, 68, 173, 0.1);
+      }
+
+      .payment-option-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .payment-option h4 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.1rem;
+      }
+
+      .payment-option .amount {
+        font-weight: bold;
+        color: #8e44ad;
+      }
+
+      .payment-option p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .amount-to-pay {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #8e44ad;
+        text-align: center;
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #f8f4fc;
+        border-radius: 6px;
+      }
+
+      .non-refundable-notice {
+        margin-top: 8px;
+        padding: 4px 8px;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        border-radius: 4px;
+        color: #856404;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+
+      .payment-option.selected .non-refundable-notice {
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+      }
+
+      .refund-policy {
+        margin: 15px 0;
+        padding: 15px;
+        background-color: ${selectedPaymentOption === 'partial' ? '#fff3cd' : '#f8f9fa'};
+        border-radius: 8px;
+        border-left: 4px solid ${selectedPaymentOption === 'partial' ? '#856404' : '#8e44ad'};
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .refund-policy-icon {
+        font-size: 20px;
+        color: ${selectedPaymentOption === 'partial' ? '#856404' : '#8e44ad'};
+      }
+
+      .refund-policy-text {
+        flex: 1;
+      }
+
+      .refund-policy-text strong {
+        display: block;
+        color: #2c3e50;
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+      }
+
+      .refund-policy-text p {
+        margin: 5px 0 0 0;
+        color: ${selectedPaymentOption === 'partial' ? '#856404' : '#666'};
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .card-element-container {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: white;
+      }
+
+      .payment-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .payment-buttons button {
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .payment-buttons button[type="button"] {
+        background-color: #e0e0e0;
+        color: #666;
+      }
+
+      .payment-buttons button[type="submit"] {
+        background-color: #8e44ad;
+        color: white;
+      }
+
+      .payment-buttons button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .payment-buttons button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .remaining-amount {
+        margin-top: 8px;
+        padding: 4px 8px;
+        background-color: #e8eaf6;
+        border-radius: 4px;
+        color: #3f51b5;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+
+      .payment-option.selected .remaining-amount {
+        background-color: #c5cae9;
+      }
+    `;
+
+    // Update the styles
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = styles;
+    document.head.appendChild(styleSheet);
+
+    // Cleanup function to remove the style element when component unmounts
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, [selectedPaymentOption]); // Re-run when selectedPaymentOption changes
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,35 +205,79 @@ const PaymentForm = ({ amount, bookingId, onSuccess, onCancel }) => {
     }
 
     try {
-      // Get client secret
-      const response = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
+      // Calculate final amount based on payment option
+      const finalAmount = selectedPaymentOption === 'full' ? amount : Math.ceil(amount * 0.3);
+
+      // Create booking first
+      const token = localStorage.getItem('token');
+      const bookingResponse = await fetch('http://localhost:5000/api/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'auth-token': localStorage.getItem('token')
+          'auth-token': token
         },
-        body: JSON.stringify({ bookingId, amount })
+        body: JSON.stringify({
+          ...formData,
+          paymentType: selectedPaymentOption
+        }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Payment intent error response:', errorText);
-        throw new Error('Failed to create payment');
+      if (!bookingResponse.ok) {
+        const errorData = await bookingResponse.json();
+        throw new Error(errorData.message || 'Failed to create booking');
       }
 
-      const data = await response.json();
+      const bookingData = await bookingResponse.json();
+      const bookingId = bookingData.appointment._id;
+
+      // Get client secret
+      const paymentResponse = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token': token
+        },
+        body: JSON.stringify({ 
+          bookingId, 
+          amount: finalAmount,
+          paymentType: selectedPaymentOption 
+        })
+      });
+
+      if (!paymentResponse.ok) {
+        // Delete the booking if payment intent creation fails
+        await fetch(`http://localhost:5000/api/book/${bookingId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token': token
+          }
+        });
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.message || 'Failed to create payment');
+      }
+
+      const paymentData = await paymentResponse.json();
 
       // Confirm payment
-      const result = await stripe.confirmCardPayment(data.clientSecret, {
+      const result = await stripe.confirmCardPayment(paymentData.clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
           billing_details: {
-            name: 'Customer Name', // You could pass the customer name here
+            name: formData.fullName,
           },
         },
       });
 
       if (result.error) {
+        // If payment fails, delete the booking
+        await fetch(`http://localhost:5000/api/book/${bookingId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token': token
+          }
+        });
         throw new Error(result.error.message);
       }
 
@@ -62,11 +287,12 @@ const PaymentForm = ({ amount, bookingId, onSuccess, onCancel }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token': localStorage.getItem('token')
+            'auth-token': token
           },
           body: JSON.stringify({
             bookingId,
-            paymentIntentId: result.paymentIntent.id
+            paymentIntentId: result.paymentIntent.id,
+            paymentType: selectedPaymentOption
           })
         });
 
@@ -83,7 +309,47 @@ const PaymentForm = ({ amount, bookingId, onSuccess, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="payment-form">
       <h3>Payment Details</h3>
-      <p>Amount: Rs.{amount}</p>
+      
+      <div className="payment-options">
+        <div 
+          className={`payment-option ${selectedPaymentOption === 'full' ? 'selected' : ''}`}
+          onClick={() => setSelectedPaymentOption('full')}
+        >
+          <div className="payment-option-header">
+            <h4>Full Payment</h4>
+            <span className="amount">Rs.{amount}</span>
+          </div>
+          <p>Pay the full amount now</p>
+        </div>
+        
+        <div 
+          className={`payment-option ${selectedPaymentOption === 'partial' ? 'selected' : ''}`}
+          onClick={() => setSelectedPaymentOption('partial')}
+        >
+          <div className="payment-option-header">
+            <h4>Partial Payment</h4>
+            <span className="amount">Rs.{Math.ceil(amount * 0.3)}</span>
+          </div>
+          <p>Pay 30% now, remaining at salon</p>
+          <div className="remaining-amount">
+            Remaining to pay at salon: Rs.{Math.ceil(amount * 0.7)}
+          </div>
+        </div>
+      </div>
+
+      <p className="amount-to-pay">Amount to pay: Rs.{selectedPaymentOption === 'full' ? amount : Math.ceil(amount * 0.3)}</p>
+      
+      <div className="refund-policy">
+        <div className="refund-policy-icon">ℹ️</div>
+        <div className="refund-policy-text">
+          <strong>Cancellation & Refund Policy:</strong>
+          {selectedPaymentOption === 'partial' ? (
+            <p>Partial payments (30% advance) are non-refundable upon cancellation.</p>
+          ) : (
+            <p>If you need to cancel your appointment, you will receive 70% of the payment amount as a refund. The remaining 30% will be retained as a cancellation fee.</p>
+          )}
+        </div>
+      </div>
       
       <div className="card-element-container">
         <CardElement options={{
@@ -237,36 +503,10 @@ export default function Booking() {
     const hour12 = (hours % 12 || 12).toString().padStart(2, '0');
     const formattedTime = `${hour12}:${minutes} ${ampm}`;
 
-    try {
-      const response = await fetch('http://localhost:5000/api/book', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'auth-token': token
-        },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          phoneNumber: formData.phoneNumber,
-          date: formData.date,
-          time: formattedTime,
-          service: formData.service,
-          seatNumber: formData.seatNumber,
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        // Instead of showing success message, show payment form
-        const selectedService = services.find(s => s._id === formData.service);
-        setPaymentAmount(selectedService ? selectedService.price : 0);
-        setBookingId(data.appointment._id);
-        setShowPayment(true);
-      } else {
-        setMessage(data.message);
-      }
-    } catch (err) {
-      console.error('Booking error:', err);
-      setMessage('Network error: Please check your connection');
-    }
+    // Instead of creating booking, show payment form
+    const selectedService = services.find(s => s._id === formData.service);
+    setPaymentAmount(selectedService ? selectedService.price : 0);
+    setShowPayment(true);
   };
 
   const handlePaymentSuccess = () => {
@@ -284,7 +524,6 @@ export default function Booking() {
 
   const handlePaymentCancel = () => {
     setShowPayment(false);
-    setMessage('Booking created but payment was cancelled. Please complete payment later.');
   };
 
   return (
@@ -325,8 +564,17 @@ export default function Booking() {
           <div className="alert-popup payment">
             <Elements stripe={stripePromise}>
               <PaymentForm 
-                amount={paymentAmount} 
-                bookingId={bookingId} 
+                amount={paymentAmount}
+                formData={{
+                  ...formData,
+                  time: (() => {
+                    const time24 = formData.time;
+                    const [hours, minutes] = time24.split(':');
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    const hour12 = (hours % 12 || 12).toString().padStart(2, '0');
+                    return `${hour12}:${minutes} ${ampm}`;
+                  })()
+                }}
                 onSuccess={handlePaymentSuccess} 
                 onCancel={handlePaymentCancel} 
               />
@@ -388,15 +636,23 @@ export default function Booking() {
           value={formData.phoneNumber}
           onChange={(e) => {
             const value = e.target.value;
+            // Only allow numbers and check for 98/97 start
             if (value === '' || /^\d{0,10}$/.test(value)) {
-              handleChange(e);
+              if (value.length === 0 || (value.length === 1 && (value === '9')) || 
+                  (value.length === 2 && (value.startsWith('98') || value.startsWith('97'))) ||
+                  (value.length > 2 && (value.startsWith('98') || value.startsWith('97')))) {
+                handleChange(e);
+              }
             }
           }}
           placeholder="Enter your 10-digit phone number"
-          pattern="\d{10}"
-          title="Please enter a 10-digit phone number"
+          pattern="^(98|97)\d{8}$"
+          title="Phone number must start with 98 or 97 and be 10 digits long"
           required
         />
+        <small className="phone-helper-text">
+          Phone number must start with 98 or 97 (e.g., 9812345678)
+        </small>
         <br />
 
         <label htmlFor="date">Date:</label>

@@ -122,7 +122,7 @@ export default function Admincontact() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <FaSearch className="search-icon" />
+        
             <input
               className="search-input"
               type="text"

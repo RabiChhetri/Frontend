@@ -258,4 +258,19 @@
   border-radius: 15px;
   color: #6c757d;
   font-size: 1.25rem;
-} 
+}
+
+/* Add this to your Bookinglist.css file */
+.refund-policy-info {
+  background-color: #f8f9fa;
+  border-left: 4px solid #17a2b8;
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+}
+
+.refund-policy-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #495057;
+}

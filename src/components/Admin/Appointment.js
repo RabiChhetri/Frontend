@@ -376,8 +376,14 @@ export default function Appointment() {
                 ) : paymentDetails ? (
                   <div>
                     <p><strong>Customer:</strong> {capitalizeWords(paymentDetails.fullName)}</p>
-                    <p><strong>Payment Status:</strong> {paymentDetails.paymentStatus || 'N/A'}</p>
-                    <p><strong>Amount:</strong> {paymentDetails.paymentAmount ? `Rs.${paymentDetails.paymentAmount}` : 'N/A'}</p>
+                    <p><strong>Payment Status:</strong> {paymentDetails.completed ? 'completed' : paymentDetails.paymentType === 'partial' ? 'pending' : paymentDetails.paymentStatus || 'N/A'}</p>
+                    <p><strong>Amount Paid:</strong> {paymentDetails.completed ? `Rs.${paymentDetails.paymentType === 'partial' ? Math.ceil(paymentDetails.paymentAmount * (10/3)) : paymentDetails.paymentAmount}` : paymentDetails.paymentAmount ? `Rs.${paymentDetails.paymentAmount}` : 'N/A'}</p>
+                    {paymentDetails.paymentType === 'partial' && !paymentDetails.completed && (
+                      <p><strong>Remaining Amount:</strong> Rs.{Math.ceil(paymentDetails.paymentAmount * (7/3))}</p>
+                    )}
+                    {paymentDetails.paymentType === 'partial' && paymentDetails.completed && (
+                      <p><strong>Remaining Amount:</strong> Rs.0</p>
+                    )}
                     <p><strong>Payment Date:</strong> {paymentDetails.paymentDate ? formatDate(paymentDetails.paymentDate) + ' ' + formatTime(paymentDetails.paymentDate) : 'N/A'}</p>
                   </div>
                 ) : null}

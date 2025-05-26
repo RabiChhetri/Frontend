@@ -19,6 +19,7 @@ import Services from './components/Admin/Services';
 import Analytics from './components/Admin/Analytics';
 import Settings from './components/Admin/Settings';
 import Rewards from './components/Admin/Rewards';
+import Cancellations from './components/Admin/Cancellations';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import AdminAuthWrapper from './components/AdminAuthWrapper';
@@ -65,6 +66,7 @@ const AppContent = () => {
         <Route path="/admin/Settings" element={<AdminRoute><Settings /></AdminRoute>} />
         <Route path="/admin/Rewards" element={<AdminRoute><Rewards /></AdminRoute>} />
         <Route path="/admin/Admincontact" element={<AdminRoute><Admincontact /></AdminRoute>} />
+        <Route path="/admin/Cancellations" element={<AdminRoute><Cancellations /></AdminRoute>} />
         <Route path="*" element={<Navigate to="/" replace/>} />
       </Routes>
       {!isAdminRoute && <Footer />}

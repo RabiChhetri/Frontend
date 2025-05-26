@@ -44,17 +44,18 @@ export default function Bookinglist() {
     setShowCancelModal(true);
   };
 
+  // Update the handleCancelAppointment function
   const handleCancelAppointment = async () => {
     if (!cancelPassword) {
       setCancelMessage('Please enter your login password');
       return;
     }
-
+  
     if (!selectedBooking) {
       setCancelMessage('No appointment selected');
       return;
     }
-
+  
     try {
       const token = localStorage.getItem('token');
       const response = await axios.delete(`http://localhost:5000/api/book/${selectedBooking._id}`, {
@@ -62,14 +63,26 @@ export default function Bookinglist() {
           'auth-token': token
         }
       });
-
+  
       if (response.data.message === "Booking cancelled successfully") {
-        setCancelMessage('Appointment cancelled successfully');
-        setShowCancelModal(false);
-        setCancelPassword('');
-        setSelectedBooking(null);
-        // Refresh the bookings list
-        fetchBookings();
+        // Show different messages based on payment type
+        let cancelMessage = '';
+        if (response.data.paymentType === 'partial') {
+          cancelMessage = 'Appointment cancelled successfully. No refund will be issued for partial payments.';
+        } else if (response.data.refundAmount) {
+          cancelMessage = `Appointment cancelled successfully. A refund of Rs.${response.data.refundAmount.toFixed(2)} (70%) will be processed to your original payment method.`;
+        } else {
+          cancelMessage = 'Appointment cancelled successfully.';
+        }
+        
+        setCancelMessage(cancelMessage);
+        setTimeout(() => {
+          setShowCancelModal(false);
+          setCancelPassword('');
+          setSelectedBooking(null);
+          // Refresh the bookings list
+          fetchBookings();
+        }, 5000); // Show message for 5 seconds
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to cancel appointment';
@@ -77,6 +90,43 @@ export default function Bookinglist() {
     }
   };
 
+  // Update the cancel modal to include payment type specific information
+  {showCancelModal && (
+    <div className="cancel-modal">
+      <div className="cancel-modal-content">
+        <h3>Cancel Appointment</h3>
+        <p>Please enter your login password to cancel the appointment</p>
+        <div className="refund-policy-info">
+          {selectedBooking?.paymentType === 'partial' ? (
+            <p><strong>Cancellation Policy:</strong> No refund will be issued for partial payments.</p>
+          ) : (
+            <p><strong>Refund Policy:</strong> You will receive 70% of your payment as refund. 30% will be retained by the salon.</p>
+          )}
+        </div>
+        <input
+          type="password"
+          placeholder="Enter your login password"
+          value={cancelPassword}
+          onChange={(e) => setCancelPassword(e.target.value)}
+        />
+        {cancelMessage && (
+          <p className={`cancel-message ${cancelMessage.includes('successfully') ? 'success' : 'error'}`}>
+            {cancelMessage}
+          </p>
+        )}
+        <div className="cancel-modal-buttons">
+          <button onClick={handleCancelAppointment}>Cancel Appointment</button>
+          <button onClick={() => {
+            setShowCancelModal(false);
+            setCancelPassword('');
+            setCancelMessage('');
+            setSelectedBooking(null);
+          }}>Close</button>
+        </div>
+      </div>
+    </div>
+  )}
+  
   // Helper to get service object by id
   const getServiceById = (id) => services.find(s => s._id === id) || {};
 
